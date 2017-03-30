@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ColorPrimary">#0573B7</color>
+    <color name="ColorPrimaryDark">#065e94</color>
+    <color name="tabsScrollColor">#ffffff</color>
+    <color name="textColorPrimary">#ff656565</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="colorAccent">#a51bbeb9</color>
+</resources>

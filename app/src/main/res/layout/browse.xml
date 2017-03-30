@@ -1,0 +1,27 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="20dp"
+    android:background="#ffffff"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/ivBrowseIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/blue_location"
+        android:layout_centerVertical="true"/>
+    <TextView
+        android:id="@+id/tvBrowseLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/link"
+        android:textSize="25sp"
+        android:textColor="#ff2f2f2f"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/ivBrowseIcon"
+        />
+</RelativeLayout>
