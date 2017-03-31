@@ -34,7 +34,7 @@ public class TabBrowse extends Fragment{
         View view = inflater.inflate(R.layout.tab_browse,container,false);
 
         //get current user email
-        currentUserEmail = this.getArguments().getString(new PushUserUtil().USER_EMAIL);
+        //currentUserEmail = this.getArguments().getString(new PushUserUtil().USER_EMAIL);
 
 
         init(view);

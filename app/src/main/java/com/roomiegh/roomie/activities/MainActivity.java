@@ -34,8 +34,8 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         //receive current user information
-        Bundle receivedInfo = getIntent().getBundleExtra(PushUserUtil.PUSH_INTENT_KEY);
-        currentUserEmail = receivedInfo.getString(PushUserUtil.USER_EMAIL);
+        /*Bundle receivedInfo = getIntent().getBundleExtra(PushUserUtil.PUSH_INTENT_KEY);
+        currentUserEmail = receivedInfo.getString(PushUserUtil.USER_EMAIL);*/
         //fragment.setArguments(receivedInfo);
 
         // Creating Toolbar and setting it as Toolbar for the activity
@@ -44,7 +44,8 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
 
         // Creating ViewPagerAdapter and Passing Fragment Manager, Titles for the Tabs and Number Of Tabs.
-        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,NumbOftabs,currentUserEmail);
+        //adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,NumbOftabs,currentUserEmail);
+        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,NumbOftabs);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);

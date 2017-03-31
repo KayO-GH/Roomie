@@ -65,9 +65,9 @@ public class TabProfile extends Fragment{
 
         //receiving current user email from registration screen
         //receiving arguments from passed bundle and contained information
-        doNow();
+        //doNow();
 
-        btMyProfileEdit.setOnClickListener(new View.OnClickListener() {
+        /*btMyProfileEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle pushUser = new Bundle();
@@ -77,7 +77,7 @@ public class TabProfile extends Fragment{
                 editIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY, pushUser);
                 startActivityForResult(editIntent, 100);//using 100 as requestCode
             }
-        });
+        });*/
         
         return view;
     }

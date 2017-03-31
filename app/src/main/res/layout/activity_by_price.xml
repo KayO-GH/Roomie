@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.roomiegh.roomie.activities.browseActivities.ByPrice">
+    tools:context="com.roomiegh.roomie.activities.browseActivities.ByPrice"
+    android:background="#FFFAFAFA">
 
     <include
         android:id="@+id/tool_bar"

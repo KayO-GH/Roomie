@@ -84,7 +84,7 @@ public class ByName extends ActionBarActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             } finally {
-                                Toast.makeText(ByName.this, ""+allHostels.toString(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(ByName.this, ""+allHostels.toString(), Toast.LENGTH_LONG).show();
                                 hostelListAdapter.setAllHostels(allHostels);
                                 hostelListAdapter.notifyDataSetChanged();
                                 pbByName.setVisibility(View.GONE);

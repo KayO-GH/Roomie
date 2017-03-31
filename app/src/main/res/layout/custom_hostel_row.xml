@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:weightSum="4">
+    android:weightSum="4"
+    android:theme="@style/AppTheme">
 
     <ImageView
         android:id="@+id/ivHostelThumbnail"
@@ -25,19 +26,22 @@
             android:layout_height="wrap_content"
             android:text="Your Awesome Hostel"
             android:textSize="@dimen/abc_text_size_large_material"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:textColor="#828282"/>
         <!--<TextView
             android:id="@+id/tvHostelListLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your awesome location"
-            android:layout_gravity="center_horizontal"/>-->
+            android:layout_gravity="center_horizontal"
+            android:textColor="#828282"/>-->
         <TextView
             android:id="@+id/tvHostelListRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your awesome rating"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:textColor="#828282"/>
     </LinearLayout>
 
 </LinearLayout>
