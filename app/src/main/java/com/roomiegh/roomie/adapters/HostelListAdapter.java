@@ -43,7 +43,7 @@ public class HostelListAdapter extends BaseAdapter{
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return allHostels.get(position).getId();
     }
 
     @Override

@@ -75,14 +75,16 @@ public class ByName extends ActionBarActivity {
                                     hostel.setLocationId(jsonData.getInt("locations_location_id"));
                                     hostel.setNoOfRooms(jsonData.getInt("noOfRooms"));
                                     hostel.setRating(jsonData.getDouble("rating"));
-                                    hostel.setPhotopath(jsonData.getString("photoPath"));
+                                    /*if (jsonData.getString("photoPath") != null)
+                                        hostel.setPhotopath(jsonData.getString("photoPath"));*/
 
                                     //add hostel to list
                                     allHostels.add(hostel);
-                                    Log.d(LOG_TAG, "Added: "+hostel.getName());
+                                    Log.d(LOG_TAG, "Added: " + hostel.getName());
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                                Log.d(LOG_TAG, "Exception encountered: " + e.toString());
                             } finally {
                                 //Toast.makeText(ByName.this, ""+allHostels.toString(), Toast.LENGTH_LONG).show();
                                 hostelListAdapter.setAllHostels(allHostels);
@@ -94,13 +96,13 @@ public class ByName extends ActionBarActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(LOG_TAG, "onErrorResponse: Error listener fired: "+error.getMessage());
+                Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.getMessage());
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 pbByName.setVisibility(View.GONE);
             }
         });
         // Adding JsonObject request to request queue
-        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrayReq,REQUEST_TAG);
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrayReq, REQUEST_TAG);
     }
 
     private void init() {

@@ -18,18 +18,29 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textColor="#555"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Max:"
             android:textSize="@dimen/abc_text_size_display_1_material"/>
 
         <TextView
-            android:id="@+id/tvMaxPrice"
+            android:textColor="#555"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  GHC"
+            android:textSize="@dimen/abc_text_size_display_1_material"/>
+
+        <EditText
+            android:textColor="#555"
+            android:id="@+id/etMaxPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
             android:textAlignment="center"
-            android:textSize="@dimen/abc_text_size_display_1_material"/>
+            android:textSize="@dimen/abc_text_size_display_1_material"
+            android:inputType="number"
+            android:gravity="center_horizontal"/>
     </LinearLayout>
 
 
@@ -37,7 +48,8 @@
         android:id="@+id/sbMax"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/abc_action_bar_default_padding_material" />
+        android:layout_marginTop="@dimen/abc_action_bar_default_padding_material"
+        android:max="10000"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,25 +57,37 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textColor="#555"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Min:"
             android:textSize="@dimen/abc_text_size_display_1_material"/>
 
         <TextView
-            android:id="@+id/tvMinPrice"
+            android:textColor="#555"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  GHC"
+            android:textSize="@dimen/abc_text_size_display_1_material"/>
+
+        <EditText
+            android:textColor="#555"
+            android:id="@+id/etMinPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
             android:textAlignment="center"
-            android:textSize="@dimen/abc_text_size_display_1_material"/>
+            android:textSize="@dimen/abc_text_size_display_1_material"
+            android:inputType="number"
+            android:gravity="center_horizontal"/>
     </LinearLayout>
 
     <SeekBar
         android:id="@+id/sbMin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/abc_action_bar_default_padding_material" />
+        android:layout_marginTop="@dimen/abc_action_bar_default_padding_material"
+        android:max="6000" />
 
     <ListView
         android:id="@+id/lvHostelsByPrice"
