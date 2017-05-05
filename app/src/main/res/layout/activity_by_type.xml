@@ -1,10 +1,10 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFAFAFA"
     android:orientation="vertical"
-    tools:context="com.roomiegh.roomie.activities.browseActivities.ByType"
-    android:background="#FFFAFAFA">
+    tools:context="com.roomiegh.roomie.activities.browseActivities.ByType">
 
     <include
         android:id="@+id/tool_bar"
@@ -12,4 +12,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tool_bar"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+        <ImageView
+            android:id="@+id/ivType4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="4 in a room"
+            android:src="@drawable/type_4in1"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/ivType3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="3 in a room"
+            android:src="@drawable/type_3in1"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/ivType2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="2 in a room"
+            android:src="@drawable/type_2in1"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/ivType1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="1 in a room"
+            android:src="@drawable/type_1in1"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</RelativeLayout>
