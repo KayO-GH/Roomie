@@ -30,5 +30,7 @@
     <string name="title_activity_news">Browse By Price</string>
     <string name="title_activity_view_room">ViewRoom</string>
     <string name="hostel_thumbnail">Hostel Thumbnail</string>
+    <string name="inactive_connection">It appears you do not have an active connection</string>
+    <string name="check_connection">Check your Wi-Fi or Data connection</string>
 
 </resources>

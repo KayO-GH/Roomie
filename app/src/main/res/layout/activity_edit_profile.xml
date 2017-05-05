@@ -220,7 +220,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:background="@color/bluish"
                 android:text="Save"
                 android:textColor="#ffffff" />
 

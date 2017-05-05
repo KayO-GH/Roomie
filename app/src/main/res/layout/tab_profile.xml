@@ -164,7 +164,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="40dp"
-                android:background="@color/bluish"
                 android:text="Edit"
                 android:textColor="#ffffff"/>
             <TextView
