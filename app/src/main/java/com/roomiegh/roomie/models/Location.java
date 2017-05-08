@@ -1,19 +1,25 @@
 package com.roomiegh.roomie.models;
 
+import java.io.Serializable;
+
 /**
  * Created by anonymous on 11/4/16.
  */
 
-public class Location {
-
-    String cardName;
-    int imageResourceId;
-    int isfav;
-    int isturned;
-
-    ////////// START - Relevant portion
+public class Location implements Serializable{
     int id;
     String name, region;
+    boolean isHighlighted = false;
+
+    public Location() {
+    }
+
+    public Location(int id, String name, String region, boolean isHighlighted) {
+        this.id = id;
+        this.name = name;
+        this.region = region;
+        this.isHighlighted = isHighlighted;
+    }
 
     public int getId() {
         return id;
@@ -39,37 +45,11 @@ public class Location {
         this.region = region;
     }
 
-    ////////// END- Relevant portion
-
-    public int getIsturned() {
-        return isturned;
+    public boolean isHighlighted() {
+        return isHighlighted;
     }
 
-    public void setIsturned(int isturned) {
-        this.isturned = isturned;
-    }
-
-    public int getIsfav() {
-        return isfav;
-    }
-
-    public void setIsfav(int isfav) {
-        this.isfav = isfav;
-    }
-
-    public String getCardName() {
-        return cardName;
-    }
-
-    public void setCardName(String cardName) {
-        this.cardName = cardName;
-    }
-
-    public int getImageResourceId() {
-        return imageResourceId;
-    }
-
-    public void setImageResourceId(int imageResourceId) {
-        this.imageResourceId = imageResourceId;
+    public void setHighlighted(boolean highlighted) {
+        isHighlighted = highlighted;
     }
 }

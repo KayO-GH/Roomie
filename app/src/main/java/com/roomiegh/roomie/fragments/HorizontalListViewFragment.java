@@ -4,9 +4,6 @@ package com.roomiegh.roomie.fragments;
  * Created by anonymous on 11/4/16.
  */
 
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,15 +39,17 @@ public class HorizontalListViewFragment extends Fragment {
 
     private static final String LOG_TAG = "HorizontalListView";
     private static final String REQUEST_TAG = "hostels_by_name_request";
-    ArrayList<Location> listItems = new ArrayList<>();
+    //ArrayList<Location> listItems = new ArrayList<>();
     ArrayList<Location> allLocations = new ArrayList<>();
     RecyclerView mRecyclerView;
-    String fruits[] = {"Mango","Apple","Grapes","Papaya","WaterMelon"};
-    int images[] = {R.drawable.mango, R.drawable.apple,R.drawable.grapes,R.drawable.papaya,R.drawable.watermelon};
+    /*String fruits[] = {"Mango","Apple","Grapes","Papaya","WaterMelon"};
+    int images[] = {R.drawable.mango, R.drawable.apple,R.drawable.grapes,R.drawable.papaya,R.drawable.watermelon};*/
 
-    String url = "http://roomiegh.herokuapp.com/location";
+    String locations_url = "http://roomiegh.herokuapp.com/location";
+    String location_specific_url = "http://roomiegh.herokuapp.com/locationhostel/";
     LocationAdapter mLocationAdapter = new LocationAdapter();
     ProgressBar pbLocations;
+    private int lastSelected = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class HorizontalListViewFragment extends Fragment {
 
     private void callForLocations() {
         pbLocations.setVisibility(View.VISIBLE);
-        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, url, null,
+        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, locations_url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -120,7 +120,7 @@ public class HorizontalListViewFragment extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         //if (allLocations.size() > 0 & mRecyclerView != null) {
-            mRecyclerView.setAdapter(mLocationAdapter);
+        mRecyclerView.setAdapter(mLocationAdapter);
         //}
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -137,7 +137,8 @@ public class HorizontalListViewFragment extends Fragment {
         private ArrayList<Location> list;
 
         public LocationAdapter() {
-            list = new ArrayList<Location>();        }
+            list = new ArrayList<Location>();
+        }
 
         public LocationAdapter(ArrayList<Location> Data) {
             list = Data;
@@ -160,9 +161,15 @@ public class HorizontalListViewFragment extends Fragment {
         public void onBindViewHolder(final LocationViewHolder holder, int position) {
 
             holder.titleTextView.setText(list.get(position).getName());
-            holder.coverImageView.setImageResource(R.drawable.apple);
-            holder.coverImageView.setTag(R.drawable.apple);
+            holder.coverImageView.setImageResource(R.drawable.blue_gradient);
+            holder.llCardInteractor.setTag(list.get(position).getId());
             holder.likeImageView.setTag(R.drawable.ic_like);
+            if(list.get(position).isHighlighted()){
+                //this area is selected
+                holder.llCardHighlight.setVisibility(View.VISIBLE);
+            }else{
+                holder.llCardHighlight.setVisibility(View.GONE);
+            }
 
         }
 
@@ -177,32 +184,52 @@ public class HorizontalListViewFragment extends Fragment {
         public TextView titleTextView;
         public ImageView coverImageView;
         public ImageView likeImageView;
-        public ImageView shareImageView;
+        LinearLayout llCardInteractor, llCardHighlight;
+        //public ImageView shareImageView;
 
         public LocationViewHolder(View v) {
             super(v);
-            titleTextView = (TextView) v.findViewById(R.id.titleTextView);
+            titleTextView = (TextView) v.findViewById(R.id.tvLocationName);
             coverImageView = (ImageView) v.findViewById(R.id.coverImageView);
             likeImageView = (ImageView) v.findViewById(R.id.likeImageView);
-            shareImageView = (ImageView) v.findViewById(R.id.shareImageView);
-            likeImageView.setOnClickListener(new View.OnClickListener() {
+            //shareImageView = (ImageView) v.findViewById(R.id.shareImageView);
+            llCardInteractor = (LinearLayout) v.findViewById(R.id.llCardInteractor);
+            llCardHighlight = (LinearLayout) v.findViewById(R.id.llCardHighlight);
+
+            //likeImageView.setOnClickListener(new View.OnClickListener() {
+            llCardInteractor.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
+                    int id = (int) llCardInteractor.getTag();
+                    if(lastSelected != id){//there is no running volley request for this location
+                        lastSelected = id;//set lastSelected to this id
 
-                    int id = (int)likeImageView.getTag();
-                    if( id == R.drawable.ic_like){
+                        for (Location loc: allLocations){
+                            if(loc.getId() == id){
+                                //highlight this location
+                                loc.setHighlighted(true);
+                            }else{
+                                loc.setHighlighted(false);
+                            }
+                        }
+                        //notify adapter at the end of iteration
+                        mLocationAdapter.notifyDataSetChanged();
 
-                        likeImageView.setTag(R.drawable.ic_liked);
-                        likeImageView.setImageResource(R.drawable.ic_liked);
+                        //TODO: tell activity to perform API call here for hostels in the said location
+                        ((ByLocation) getActivity()).callForLocationHostels();
+                        Toast.makeText(getActivity(), titleTextView.getText() + " selected", Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(getActivity(),titleTextView.getText()+" added to favourites",Toast.LENGTH_SHORT).show();
+                    }else {
+                        //probably do nothing here
 
-                    }else{
-
-                        likeImageView.setTag(R.drawable.ic_like);
+                        /*likeImageView.setTag(R.drawable.ic_like);
                         likeImageView.setImageResource(R.drawable.ic_like);
-                        Toast.makeText(getActivity(),titleTextView.getText()+" removed from favourites",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), titleTextView.getText() + " removed from favourites", Toast.LENGTH_SHORT).show();
+*/
+
+                    }
+                    if (id == R.drawable.ic_like) {
 
 
                     }
@@ -211,8 +238,7 @@ public class HorizontalListViewFragment extends Fragment {
             });
 
 
-
-            shareImageView.setOnClickListener(new View.OnClickListener() {
+            /*shareImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -226,8 +252,7 @@ public class HorizontalListViewFragment extends Fragment {
                     shareIntent.setType("image/jpeg");
                     startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
                 }
-            });
-
+            });*/
 
 
         }

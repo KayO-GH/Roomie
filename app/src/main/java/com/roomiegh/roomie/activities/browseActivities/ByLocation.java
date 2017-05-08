@@ -92,4 +92,8 @@ public class ByLocation extends AppCompatActivity {
     public ProgressBar getPbLocations() {
         return pbLocations;
     }
+
+    public void callForLocationHostels() {
+
+    }
 }
