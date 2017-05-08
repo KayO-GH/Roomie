@@ -106,8 +106,9 @@ public class ByLocation extends AppCompatActivity {
     }
 
     public void callForLocationHostels(int locationID) {
+        allHostels.clear();
         pbLocationHostels.setVisibility(View.VISIBLE);
-        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, location_specific_url+locationID, null,
+        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, location_specific_url + locationID, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -116,23 +117,30 @@ public class ByLocation extends AppCompatActivity {
                         if (response.length() != 0) {
                             JSONObject jsonData;
                             Hostel hostel;
+                            JSONArray hostelsArray;
+                            JSONObject jsonHostel;
                             try {
-                                // TODO: 08/05/2017 CHange JSON parsing for this call 
-                                for (int i = 0; i < response.length(); i++) {
-                                    jsonData = response.getJSONObject(i);
-                                    hostel = new Hostel();//make sure to redifine hostel inside loop to avoid filling the arraylist with the same elements
-                                    hostel.setId(jsonData.getInt("id"));
-                                    hostel.setName(jsonData.getString("name"));
-                                    hostel.setLocationId(jsonData.getInt("locations_location_id"));
-                                    hostel.setNoOfRooms(jsonData.getInt("noOfRooms"));
-                                    hostel.setRating(jsonData.getDouble("rating"));
-                                    /*if (jsonData.getString("photoPath") != null)
-                                        hostel.setPhotopath(jsonData.getString("photoPath"));*/
+                                // TODO: 08/05/2017 Change JSON parsing for this call
+
+                                jsonData = response.getJSONObject(0);
+                                hostelsArray = jsonData.getJSONArray("location_hostels");
+
+                                for (int j = 0; j < hostelsArray.length(); j++) {
+                                    jsonHostel = hostelsArray.getJSONObject(j);
+                                    hostel = new Hostel();//make sure to redefine hostel inside loop to avoid filling the arraylist with the same elements
+                                    hostel.setId(jsonHostel.getInt("id"));
+                                    hostel.setName(jsonHostel.getString("name"));
+                                    hostel.setLocationId(jsonHostel.getInt("locations_location_id"));
+                                    hostel.setNoOfRooms(jsonHostel.getInt("noOfRooms"));
+                                    hostel.setRating(jsonHostel.getDouble("rating"));
+                                    /*if (jsonHostel.getString("photoPath") != null)
+                                        hostel.setPhotopath(jsonHostel.getString("photoPath"));*/
 
                                     //add hostel to list
                                     allHostels.add(hostel);
                                     Log.d(LOG_TAG, "Added: " + hostel.getName());
                                 }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Log.d(LOG_TAG, "Exception encountered: " + e.toString());
