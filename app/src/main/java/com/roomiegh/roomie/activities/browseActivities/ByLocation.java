@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.activities.ViewRoomActivity;
+import com.roomiegh.roomie.adapters.HostelListAdapter;
 import com.roomiegh.roomie.database.TenantManager;
 import com.roomiegh.roomie.fragments.HorizontalListViewFragment;
 import com.roomiegh.roomie.models.Hostel;
@@ -32,12 +34,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class ByLocation extends AppCompatActivity {
     private static final String LOG_TAG = "ByLocationLog";
+    private static final String REQUEST_TAG = "hostels_by_location_request";
     private Toolbar toolbar;
     FragmentManager fm;
     Fragment fragment;
-    ProgressBar pbLocations;
+    ProgressBar pbLocations, pbLocationHostels;
+    ListView lvLocationHostels;
+    String location_specific_url = "http://roomiegh.herokuapp.com/locationhostel/";
+    ArrayList<Hostel> allHostels;
+    HostelListAdapter hostelListAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +68,15 @@ public class ByLocation extends AppCompatActivity {
                     .commit();
         }
 
-
-
-
     }
 
     private void init() {
         pbLocations = (ProgressBar) findViewById(R.id.pbLocations);
+        pbLocationHostels = (ProgressBar) findViewById(R.id.pbLocationHostels);
+        lvLocationHostels = (ListView) findViewById(R.id.lvLocationHostels);
+        allHostels = new ArrayList<Hostel>();
+        hostelListAdapter = new HostelListAdapter(getApplicationContext(), allHostels);
+        lvLocationHostels.setAdapter(hostelListAdapter);
     }
 
     @Override
@@ -93,7 +105,55 @@ public class ByLocation extends AppCompatActivity {
         return pbLocations;
     }
 
-    public void callForLocationHostels() {
+    public void callForLocationHostels(int locationID) {
+        pbLocationHostels.setVisibility(View.VISIBLE);
+        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, location_specific_url+locationID, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d(LOG_TAG, response.toString());
+
+                        if (response.length() != 0) {
+                            JSONObject jsonData;
+                            Hostel hostel;
+                            try {
+                                // TODO: 08/05/2017 CHange JSON parsing for this call 
+                                for (int i = 0; i < response.length(); i++) {
+                                    jsonData = response.getJSONObject(i);
+                                    hostel = new Hostel();//make sure to redifine hostel inside loop to avoid filling the arraylist with the same elements
+                                    hostel.setId(jsonData.getInt("id"));
+                                    hostel.setName(jsonData.getString("name"));
+                                    hostel.setLocationId(jsonData.getInt("locations_location_id"));
+                                    hostel.setNoOfRooms(jsonData.getInt("noOfRooms"));
+                                    hostel.setRating(jsonData.getDouble("rating"));
+                                    /*if (jsonData.getString("photoPath") != null)
+                                        hostel.setPhotopath(jsonData.getString("photoPath"));*/
+
+                                    //add hostel to list
+                                    allHostels.add(hostel);
+                                    Log.d(LOG_TAG, "Added: " + hostel.getName());
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.d(LOG_TAG, "Exception encountered: " + e.toString());
+                            } finally {
+                                //Toast.makeText(ByName.this, ""+allHostels.toString(), Toast.LENGTH_LONG).show();
+                                hostelListAdapter.setAllHostels(allHostels);
+                                hostelListAdapter.notifyDataSetChanged();
+                                pbLocationHostels.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.getMessage());
+                VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
+                pbLocationHostels.setVisibility(View.GONE);
+            }
+        });
+        // Adding JsonObject request to request queue
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrayReq, REQUEST_TAG);
 
     }
 }

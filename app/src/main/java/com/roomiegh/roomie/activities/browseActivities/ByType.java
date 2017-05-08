@@ -1,8 +1,5 @@
 package com.roomiegh.roomie.activities.browseActivities;
 
-/*Use 4 swipe tabs for this activity... One for each room type: 1,2,3 and 4
-* optimize code to reuse the same fragment class for the tabs hosted by this activity
-* */
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;

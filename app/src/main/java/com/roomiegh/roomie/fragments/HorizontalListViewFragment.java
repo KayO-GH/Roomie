@@ -46,7 +46,7 @@ public class HorizontalListViewFragment extends Fragment {
     int images[] = {R.drawable.mango, R.drawable.apple,R.drawable.grapes,R.drawable.papaya,R.drawable.watermelon};*/
 
     String locations_url = "http://roomiegh.herokuapp.com/location";
-    String location_specific_url = "http://roomiegh.herokuapp.com/locationhostel/";
+
     LocationAdapter mLocationAdapter = new LocationAdapter();
     ProgressBar pbLocations;
     private int lastSelected = 0;
@@ -216,8 +216,8 @@ public class HorizontalListViewFragment extends Fragment {
                         //notify adapter at the end of iteration
                         mLocationAdapter.notifyDataSetChanged();
 
-                        //TODO: tell activity to perform API call here for hostels in the said location
-                        ((ByLocation) getActivity()).callForLocationHostels();
+                        ((ByLocation) getActivity()).callForLocationHostels(id);
+
                         Toast.makeText(getActivity(), titleTextView.getText() + " selected", Toast.LENGTH_SHORT).show();
 
                     }else {
