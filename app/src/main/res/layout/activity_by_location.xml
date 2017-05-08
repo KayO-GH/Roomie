@@ -2,9 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFAFAFA"
     android:orientation="vertical"
     tools:context="com.roomiegh.roomie.activities.browseActivities.ByLocation"
-    android:background="#FFFAFAFA">
+    >
 
 
     <include
@@ -12,6 +13,18 @@
         layout="@layout/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <ProgressBar
+            android:id="@+id/pbLocations"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"/>
+    </FrameLayout>
 
     <ListView
         android:id="@+id/lvHostelLocations"

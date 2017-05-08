@@ -2,6 +2,7 @@ package com.roomiegh.roomie.activities.browseActivities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -27,7 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ByName extends ActionBarActivity {
+public class ByName extends AppCompatActivity {
     private static final String LOG_TAG = "ByNameLog";
     private static final String REQUEST_TAG = "hostels_by_name_request";
 

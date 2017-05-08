@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         />
 
-    <com.roomiegh.roomie.tabs.SlidingTabLayout
+    <com.roomiegh.roomie.fragments.SlidingTabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

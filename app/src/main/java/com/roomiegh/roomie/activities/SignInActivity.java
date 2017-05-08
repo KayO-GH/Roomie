@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +24,7 @@ import com.roomiegh.roomie.models.SignIn;
 import com.roomiegh.roomie.util.PushUserUtil;
 
 
-public class SignInActivity extends ActionBarActivity {
+public class SignInActivity extends AppCompatActivity {
     private EditText etSignInEmail, etSignInPassword;
     private CheckBox cbRemember;
     private Button btSignIn;

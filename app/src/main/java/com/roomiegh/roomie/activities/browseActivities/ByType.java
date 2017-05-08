@@ -6,13 +6,14 @@ package com.roomiegh.roomie.activities.browseActivities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.roomiegh.roomie.R;
 
-public class ByType extends ActionBarActivity {
+public class ByType extends AppCompatActivity {
     private Toolbar toolbar;
 
     @Override

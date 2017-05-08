@@ -3,6 +3,7 @@ package com.roomiegh.roomie.activities;
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.util.PushUserUtil;
 
-public class ViewRoomActivity extends Activity {
+public class ViewRoomActivity extends AppCompatActivity {
     private WebView webView;
 
     @Override

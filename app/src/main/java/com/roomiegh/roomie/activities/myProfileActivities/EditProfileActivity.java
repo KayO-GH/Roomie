@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +23,7 @@ import com.roomiegh.roomie.models.Tenant;
 import com.roomiegh.roomie.util.CameraUtil;
 import com.roomiegh.roomie.util.PushUserUtil;
 
-public class EditProfileActivity extends ActionBarActivity {
+public class EditProfileActivity extends AppCompatActivity {
     private Button btEditProfileSave;
     private ImageView ivEditProfilePic;
     private EditText etEditProfilePhone, etEditProfilePhone2, etEditProfileEmail,

@@ -1,4 +1,4 @@
-package com.roomiegh.roomie.tabs;
+package com.roomiegh.roomie.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +12,7 @@ import com.roomiegh.roomie.R;
  * Created by KayO on 23/03/2017.
  */
 
-public class Tab3In1 extends Fragment {
+public class Tab2In1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

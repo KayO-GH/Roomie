@@ -1,4 +1,4 @@
-package com.roomiegh.roomie.tabs;
+package com.roomiegh.roomie.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import com.roomiegh.roomie.activities.browseActivities.ByPrice;
 import com.roomiegh.roomie.activities.browseActivities.ByType;
 import com.roomiegh.roomie.adapters.BrowseAdapter;
 import com.roomiegh.roomie.models.BrowseManager;
-import com.roomiegh.roomie.util.PushUserUtil;
 
 /**
  * Created by Kwadwo Agyapon-Ntra on 06/10/2015.

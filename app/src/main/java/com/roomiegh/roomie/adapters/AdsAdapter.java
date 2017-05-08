@@ -76,7 +76,7 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder> {
             description = (TextView) itemView.findViewById(R.id.description_text);
             date = (TextView) itemView.findViewById(R.id.date_text);
             //thumbnail = (ImageView) itemView.findViewById(R.id.item_image);
-            cardView = (CardView) itemView.findViewById(R.id.cardView);
+            cardView = (CardView) itemView.findViewById(R.id.adsCardView);
         }
     }
 }

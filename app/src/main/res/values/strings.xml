@@ -32,5 +32,5 @@
     <string name="hostel_thumbnail">Hostel Thumbnail</string>
     <string name="inactive_connection">It appears you do not have an active connection</string>
     <string name="check_connection">Check your Wi-Fi or Data connection</string>
-
+    <string name="send_to">Send</string>
 </resources>

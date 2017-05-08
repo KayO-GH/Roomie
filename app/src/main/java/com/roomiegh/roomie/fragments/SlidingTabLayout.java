@@ -1,4 +1,4 @@
-package com.roomiegh.roomie.tabs;
+package com.roomiegh.roomie.fragments;
 
 /**
  * Created by Kwadwo Agyapon-Ntra on 01/10/2015.

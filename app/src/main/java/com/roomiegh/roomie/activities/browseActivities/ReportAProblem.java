@@ -2,6 +2,7 @@ package com.roomiegh.roomie.activities.browseActivities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,7 +11,7 @@ import android.widget.Button;
 
 import com.roomiegh.roomie.R;
 
-public class ReportAProblem extends ActionBarActivity {
+public class ReportAProblem extends AppCompatActivity {
     private Button btReportSubmit,btReportCancel;
     private Toolbar toolbar;
 

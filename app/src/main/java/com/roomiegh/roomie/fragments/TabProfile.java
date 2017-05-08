@@ -1,4 +1,4 @@
-package com.roomiegh.roomie.tabs;
+package com.roomiegh.roomie.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roomiegh.roomie.R;
-import com.roomiegh.roomie.activities.myProfileActivities.EditProfileActivity;
 import com.roomiegh.roomie.database.GuardianManager;
 import com.roomiegh.roomie.database.TenantManager;
 import com.roomiegh.roomie.models.Guardian;

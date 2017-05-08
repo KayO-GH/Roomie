@@ -1,21 +1,18 @@
-package com.roomiegh.roomie.tabs;
+package com.roomiegh.roomie.fragments;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.roomiegh.roomie.R;
-import com.roomiegh.roomie.util.ReadRSS;
+import com.roomiegh.roomie.activities.MainActivity;
 
 /**
  * Created by Kwadwo Agyapon-Ntra on 06/10/2015.
@@ -40,9 +37,10 @@ public class TabHome extends Fragment{
             Toast.makeText(getActivity(), R.string.check_connection, Toast.LENGTH_LONG).show();
             //fab.setVisibility(View.INVISIBLE);
         }
-        ReadRSS readRSS =   new ReadRSS(getActivity(), recyclerView, svConnectionError);
+        /*ReadRSS readRSS =   new ReadRSS(getActivity(), recyclerView, svConnectionError);
         Log.d(HOME_TAG, "onCreateView: about to call ReadRSS");
-        readRSS.execute();
+        readRSS.execute();*/
+        ((MainActivity)getActivity()).doRSSRead(getActivity(),recyclerView,svConnectionError);
 
         return view;
     }

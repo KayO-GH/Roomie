@@ -3,6 +3,7 @@ package com.roomiegh.roomie.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +13,7 @@ import android.widget.ImageView;
 import com.roomiegh.roomie.R;
 
 
-public class LandingActivity extends ActionBarActivity {
+public class LandingActivity extends AppCompatActivity {
     private Button btLandSignUp, btLandSingIn;
     private ImageView ivLandRoomie;
 

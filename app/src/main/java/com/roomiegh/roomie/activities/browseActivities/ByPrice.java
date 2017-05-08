@@ -2,6 +2,7 @@ package com.roomiegh.roomie.activities.browseActivities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +14,7 @@ import android.widget.SeekBar;
 import com.roomiegh.roomie.R;
 
 /*Prototyping by price page - Friday, 05/05/2017*/
-public class ByPrice extends ActionBarActivity {
+public class ByPrice extends AppCompatActivity {
     private Toolbar toolbar;
     private SeekBar sbMax, sbMin;
     private EditText etMaxPrice, etMinPrice;

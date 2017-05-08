@@ -3,23 +3,29 @@ package com.roomiegh.roomie.activities;
 /*Host activity for home, browse and profile tabs*/
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ScrollView;
 
 import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.adapters.ViewPagerAdapter;
-import com.roomiegh.roomie.tabs.SlidingTabLayout;
-import com.roomiegh.roomie.util.PushUserUtil;
+import com.roomiegh.roomie.fragments.SlidingTabLayout;
+import com.roomiegh.roomie.util.ReadRSS;
 
 //import tabs.SlidingTabLayout;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
+    private static final String HOME_TAG = "HomeAdsView";
     // Declaring View and Variables
     Toolbar toolbar;
     ViewPager pager;
@@ -95,5 +101,12 @@ public class MainActivity extends ActionBarActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void doRSSRead(Context ctx, RecyclerView recyclerView, ScrollView svConnectionError) {
+        ReadRSS readRSS =   new ReadRSS(ctx, recyclerView, svConnectionError);
+        Log.d(HOME_TAG, "onCreateView: about to call ReadRSS");
+        readRSS.execute();
     }
 }

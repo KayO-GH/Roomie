@@ -1,18 +1,13 @@
 package com.roomiegh.roomie.adapters;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.roomiegh.roomie.tabs.Tab1In1;
-import com.roomiegh.roomie.tabs.Tab2In1;
-import com.roomiegh.roomie.tabs.Tab3In1;
-import com.roomiegh.roomie.tabs.Tab4In1;
-import com.roomiegh.roomie.tabs.TabBrowse;
-import com.roomiegh.roomie.tabs.TabHome;
-import com.roomiegh.roomie.tabs.TabProfile;
-import com.roomiegh.roomie.util.PushUserUtil;
+import com.roomiegh.roomie.fragments.Tab1In1;
+import com.roomiegh.roomie.fragments.Tab2In1;
+import com.roomiegh.roomie.fragments.Tab3In1;
+import com.roomiegh.roomie.fragments.Tab4In1;
 
 /**
  * Created by KayO on 23/03/2017.

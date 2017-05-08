@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,7 @@ import com.roomiegh.roomie.util.PushUserUtil;
 import java.util.Date;
 
 
-public class RegistrationActivity extends ActionBarActivity {
+public class RegistrationActivity extends AppCompatActivity {
     private EditText etRegFirstName, etRegLastName,
             etRegPhone,etRegYear,etRegMonth,etRegDay,etRegRefNo;
     private Button btRegProceed, btRegCancel;
