@@ -13,6 +13,7 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
+        android:id="@+id/llRoomTypes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar"
@@ -63,5 +64,17 @@
             android:src="@drawable/type_1in1"
             android:layout_weight="1"/>
     </LinearLayout>
+    <ListView
+        android:id="@+id/lvHostelsByType"
+        android:layout_below="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+    <ProgressBar
+        android:id="@+id/pbByType"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

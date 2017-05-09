@@ -61,6 +61,11 @@ public class ByPrice extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
         init();
 
         //max price seekbar
@@ -179,7 +184,6 @@ public class ByPrice extends AppCompatActivity {
     }
 
     private void queryHostelsByPrice(int maxPrice, int minPrice) {
-        // TODO: 05/05/2017 Insert code to query the API
         allHostels.clear();
         pbHostelsByPrice.setVisibility(View.VISIBLE);
         JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, price_specific_url + minPrice + "/" + maxPrice, null,
@@ -268,6 +272,9 @@ public class ByPrice extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }else if(id == android.R.id.home){
+            finish();
             return true;
         }
 

@@ -42,7 +42,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:text="Please Check Your Internet Connection"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:textColor="#999"/>
 
             <ImageView
                 android:layout_width="wrap_content"

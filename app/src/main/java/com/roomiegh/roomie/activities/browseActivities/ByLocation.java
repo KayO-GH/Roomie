@@ -56,6 +56,11 @@ public class ByLocation extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
         init();
 
         fm = getSupportFragmentManager();
@@ -95,6 +100,9 @@ public class ByLocation extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }else if(id == android.R.id.home){
+            finish();
             return true;
         }
 
@@ -166,4 +174,5 @@ public class ByLocation extends AppCompatActivity {
         AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrayReq, REQUEST_TAG);
 
     }
+
 }
