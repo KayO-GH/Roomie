@@ -150,6 +150,8 @@ public class ByLocation extends AppCompatActivity {
                                 hostelListAdapter.notifyDataSetChanged();
                                 pbLocationHostels.setVisibility(View.GONE);
                             }
+                        }else{
+                            // TODO: 09/05/2017 Show that no response matches the request
                         }
                     }
                 }, new Response.ErrorListener() {

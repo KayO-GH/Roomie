@@ -13,86 +13,109 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
+        android:id="@+id/llShowOrHidePrices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:textColor="#555"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Max:"
-            android:textSize="@dimen/abc_text_size_display_1_material"/>
-
-        <TextView
-            android:textColor="#555"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  GHC"
-            android:textSize="@dimen/abc_text_size_display_1_material"/>
-
-        <EditText
-            android:textColor="#555"
-            android:id="@+id/etMaxPrice"
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textAlignment="center"
-            android:textSize="@dimen/abc_text_size_display_1_material"
-            android:inputType="number"
-            android:gravity="center_horizontal"/>
-    </LinearLayout>
+            android:orientation="horizontal">
+
+            <TextView
+                android:textColor="#555"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max:"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:textColor="#555"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  GHC"
+                android:textSize="22sp"/>
+
+            <EditText
+                android:textColor="#555"
+                android:id="@+id/etMaxPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAlignment="center"
+                android:textSize="22sp"
+                android:inputType="number"
+                android:gravity="center_horizontal"/>
+        </LinearLayout>
 
 
-    <SeekBar
-        android:id="@+id/sbMax"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:max="10000"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:textColor="#555"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Min:"
-            android:textSize="@dimen/abc_text_size_display_1_material"/>
-
-        <TextView
-            android:textColor="#555"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  GHC"
-            android:textSize="@dimen/abc_text_size_display_1_material"/>
-
-        <EditText
-            android:textColor="#555"
-            android:id="@+id/etMinPrice"
+        <SeekBar
+            android:id="@+id/sbMax"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textAlignment="center"
-            android:textSize="@dimen/abc_text_size_display_1_material"
-            android:inputType="number"
-            android:gravity="center_horizontal"/>
+            android:layout_marginTop="2dp"
+            android:max="10000"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:textColor="#555"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Min:"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:textColor="#555"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  GHC"
+                android:textSize="22sp"/>
+
+            <EditText
+                android:textColor="#555"
+                android:id="@+id/etMinPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAlignment="center"
+                android:textSize="22sp"
+                android:inputType="number"
+                android:gravity="center_horizontal"/>
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/sbMin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:max="6000" />
     </LinearLayout>
 
-    <SeekBar
-        android:id="@+id/sbMin"
+    <ImageButton
+        android:id="@+id/ibSearchByPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:max="6000" />
+        android:src="@android:drawable/ic_search_category_default"/>
 
-    <ListView
-        android:id="@+id/lvHostelsByPrice"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/pbByPrice"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+        <ListView
+            android:id="@+id/lvHostelsByPrice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+
 
 
 </LinearLayout>
