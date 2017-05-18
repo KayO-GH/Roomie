@@ -1,6 +1,7 @@
 package com.roomiegh.roomie.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by KayO on 30/03/2017.
@@ -8,9 +9,11 @@ import java.io.Serializable;
 
 public class Hostel implements Serializable{
     int id, noOfRooms, locationId;
+    //TODO change photopath to ArrayList of photopaths when we get multiple photos per hostel
     String name, photopath;
     double rating;
     String description;
+    ArrayList<String> allFacilities;
 
     public Hostel() {
     }
@@ -80,6 +83,13 @@ public class Hostel implements Serializable{
         this.description = description;
     }
 
+    public ArrayList<String> getAllFacilities() {
+        return allFacilities;
+    }
+
+    public void setAllFacilities(ArrayList<String> allFacilities) {
+        this.allFacilities = allFacilities;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -95,7 +105,9 @@ public class Hostel implements Serializable{
         if (name != null ? !name.equals(hostel.name) : hostel.name != null) return false;
         if (photopath != null ? !photopath.equals(hostel.photopath) : hostel.photopath != null)
             return false;
-        return description != null ? description.equals(hostel.description) : hostel.description == null;
+        if (description != null ? !description.equals(hostel.description) : hostel.description != null)
+            return false;
+        return allFacilities != null ? allFacilities.equals(hostel.allFacilities) : hostel.allFacilities == null;
 
     }
 
@@ -111,6 +123,7 @@ public class Hostel implements Serializable{
         temp = Double.doubleToLongBits(rating);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (allFacilities != null ? allFacilities.hashCode() : 0);
         return result;
     }
 
@@ -124,6 +137,7 @@ public class Hostel implements Serializable{
                 ", photopath='" + photopath + '\'' +
                 ", rating=" + rating +
                 ", description='" + description + '\'' +
+                ", allFacilities=" + allFacilities +
                 '}';
     }
 }

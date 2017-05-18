@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class HostelDetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = "HostelDetailsLog";
     private static final String REQUEST_TAG = "hostel_details_request";
@@ -32,12 +35,14 @@ public class HostelDetailsActivity extends AppCompatActivity {
     int hostelID = -1;
     NestedScrollView nSView;
     ImageView ivHostelDetailsImage;
-    TextView tvHostelDescription, tvHostelName;
+    TextView tvHostelDescription, tvHostelName, tvFacilities;
     RatingBar rbHostelDetailsRating;
     ProgressBar pbHostelDetails;
 
     Toolbar toolbar;
     String url = "http://roomiegh.herokuapp.com/hostel/";
+
+    ArrayList<String> hostelFacilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +76,9 @@ public class HostelDetailsActivity extends AppCompatActivity {
 
                         if (response.length() != 0) {
                             JSONObject jsonData;
-                            JSONArray hostelPicsArray, hostelDescriptionArray;
+                            JSONArray hostelPicsArray, hostelDescriptionArray, hostelFacilitiesArray;
                             Hostel hostel = null;
+                            hostelFacilities = new ArrayList<>();
                             try {
                                 //for (int i = 0; i < response.length(); i++) {
                                 //we're expecting only one result at index 0
@@ -87,11 +93,19 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                 //parse JSON to extract pics and description
                                 hostelPicsArray = jsonData.getJSONArray("hostel_pics");
                                 hostelDescriptionArray = jsonData.getJSONArray("hostel_description");
+                                hostelFacilitiesArray = jsonData.getJSONArray("hostel_facilities");
 
+                                //TODO use for loop to pick multiple pics for the hostel
                                 if (hostelPicsArray.length() > 0)
                                     hostel.setPhotopath(hostelPicsArray.getJSONObject(0).getString("image_url"));
                                 if (hostelDescriptionArray.length() > 0)
                                     hostel.setDescription(hostelDescriptionArray.getJSONObject(0).getString("description"));
+                                if (hostelFacilitiesArray.length() > 0) {
+                                    for (int i = 0; i < hostelFacilitiesArray.length(); i++) {
+                                        hostelFacilities.add(hostelFacilitiesArray.getJSONObject(i).getString("facility"));
+                                    }
+                                    hostel.setAllFacilities(hostelFacilities);
+                                }
 
 
                                 //add hostel to list
@@ -107,12 +121,20 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                 nSView.setVisibility(View.VISIBLE);
 
                                 //set views using hostel data
-                                if (hostel != null){
+                                if (hostel != null) {
                                     rbHostelDetailsRating.setNumStars((int) hostel.getRating());
                                     tvHostelDescription.setText(hostel.getDescription());
                                     tvHostelName.setText(hostel.getName());
+                                    //list facilitites
+                                    String facilityList = "";
+                                    for (String facility : hostelFacilities)
+                                        if (facilityList.equals(""))//for the first element
+                                            facilityList += facility;
+                                        else
+                                            facilityList += "\n" + facility;
+                                    tvFacilities.setText(facilityList);
                                     Log.d(LOG_TAG, "Hostel Description: "
-                                            +hostel.getDescription());
+                                            + hostel.getDescription());
                                     Picasso.with(HostelDetailsActivity.this)
                                             .load(hostel.getPhotopath())
                                             .fit()
@@ -120,9 +142,9 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                             .error(R.drawable.ic_home_black)
                                             .placeholder(R.drawable.white_bkgrnd)
                                             .into(ivHostelDetailsImage);
-                                    Log.d(LOG_TAG, "Hostel Image: "+hostel.getPhotopath());
+                                    Log.d(LOG_TAG, "Hostel Image: " + hostel.getPhotopath());
 
-                                }else{
+                                } else {
                                     Log.d(LOG_TAG, "onResponse: hostel is null");
                                 }
 
@@ -149,6 +171,26 @@ public class HostelDetailsActivity extends AppCompatActivity {
         rbHostelDetailsRating = (RatingBar) findViewById(R.id.rbHostelDetailsRating);
         tvHostelDescription = (TextView) findViewById(R.id.tvHostelDetailsDescription);
         tvHostelName = (TextView) findViewById(R.id.tvHostelName);
+        tvFacilities = (TextView) findViewById(R.id.tvFacilities);
         nSView = (NestedScrollView) findViewById(R.id.nsView);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }else if(id == android.R.id.home){
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
