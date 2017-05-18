@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import com.roomiegh.roomie.R;
@@ -31,9 +32,10 @@ public class MainActivity extends AppCompatActivity {
     ViewPager pager;
     ViewPagerAdapter adapter;
     SlidingTabLayout tabs;
-    CharSequence Titles[]={"Home","Browse","Profile"};
-    int NumbOftabs =3;
+    CharSequence Titles[] = {"Home", "Browse", "Profile"};
+    int NumbOftabs = 3;
     String currentUserEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Creating ViewPagerAdapter and Passing Fragment Manager, Titles for the Tabs and Number Of Tabs.
         //adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,NumbOftabs,currentUserEmail);
-        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,NumbOftabs);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, NumbOftabs);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
@@ -91,8 +93,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }
-        else  if (id == R.id.mnSignOut) {
+        } else if (id == R.id.mnSignOut) {
             this.finishAffinity();
             Intent goHome = new Intent(this, LandingActivity.class);
             startActivity(goHome);
@@ -104,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void doRSSRead(Context ctx, RecyclerView recyclerView, ScrollView svConnectionError) {
-        ReadRSS readRSS =   new ReadRSS(ctx, recyclerView, svConnectionError);
+    public void doRSSRead(Context ctx, RecyclerView recyclerView, ScrollView svConnectionError, ProgressBar pbLoadAds) {
+        ReadRSS readRSS = new ReadRSS(ctx, recyclerView, svConnectionError, pbLoadAds);
         Log.d(HOME_TAG, "onCreateView: about to call ReadRSS");
         readRSS.execute();
     }

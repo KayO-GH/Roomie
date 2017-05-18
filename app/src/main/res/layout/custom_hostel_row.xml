@@ -35,6 +35,14 @@
             android:text="Your awesome location"
             android:layout_gravity="center_horizontal"
             android:textColor="#828282"/>-->
+        <RatingBar
+            android:id="@+id/rbHostelRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:numStars="5"
+            android:isIndicator="true"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"/>
         <TextView
             android:id="@+id/tvHostelListRating"
             android:layout_width="wrap_content"

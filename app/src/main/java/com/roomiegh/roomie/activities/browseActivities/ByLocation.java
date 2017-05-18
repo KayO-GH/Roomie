@@ -4,16 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -21,13 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.roomiegh.roomie.R;
-import com.roomiegh.roomie.activities.ViewRoomActivity;
+import com.roomiegh.roomie.activities.HostelDetailsActivity;
 import com.roomiegh.roomie.adapters.HostelListAdapter;
-import com.roomiegh.roomie.database.TenantManager;
 import com.roomiegh.roomie.fragments.HorizontalListViewFragment;
 import com.roomiegh.roomie.models.Hostel;
-import com.roomiegh.roomie.models.Tenant;
-import com.roomiegh.roomie.util.PushUserUtil;
 import com.roomiegh.roomie.volley.AppSingleton;
 
 import org.json.JSONArray;
@@ -39,6 +35,7 @@ import java.util.ArrayList;
 public class ByLocation extends AppCompatActivity {
     private static final String LOG_TAG = "ByLocationLog";
     private static final String REQUEST_TAG = "hostels_by_location_request";
+    private static final String BROWSE_TYPE = "location";
     private Toolbar toolbar;
     FragmentManager fm;
     Fragment fragment;
@@ -47,6 +44,7 @@ public class ByLocation extends AppCompatActivity {
     String location_specific_url = "http://roomiegh.herokuapp.com/locationhostel/";
     ArrayList<Hostel> allHostels;
     HostelListAdapter hostelListAdapter;
+    Hostel selectedHostel = new Hostel();
 
 
     @Override
@@ -72,6 +70,25 @@ public class ByLocation extends AppCompatActivity {
                     .add(R.id.fragmentContainer, fragment)
                     .commit();
         }
+
+        lvLocationHostels.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedHostel = (Hostel) lvLocationHostels.getItemAtPosition(position);
+                //Bundle category from which we are looking for hostel details... so we know what the user is looking for
+                //i.e. By Location or Room Type or Price or Name
+                Bundle pushBrowseTypeBundle = new Bundle();
+                pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
+                int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
+                pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                Intent hostelDetailsIntent =
+                        new Intent(getApplicationContext(), HostelDetailsActivity.class);
+                hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
+
+                //open HostelDetailsActivity using intent and pass selectedHostel to it
+                startActivity(hostelDetailsIntent);
+            }
+        });
 
     }
 

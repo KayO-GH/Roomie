@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -51,33 +52,37 @@ public class ReadRSS extends AsyncTask<Void, Void, Void> {
     ArrayList<FeedItem> feedItems;
     RecyclerView recyclerView;
     ScrollView svConnectionError;
-    final int N_WORDS = 40;
+    ProgressBar pbLoadAds;
+    //final int N_WORDS = 40;
 
-    public ReadRSS(Context context, RecyclerView recyclerView) {
+    public ReadRSS(Context context, RecyclerView recyclerView, ScrollView svConnectionError) {
         this.recyclerView = recyclerView;
         this.context = context;
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Loading...");
     }
 
-    public ReadRSS(Context context, RecyclerView recyclerView, ScrollView svConnectionError) {
+    public ReadRSS(Context context, RecyclerView recyclerView, ScrollView svConnectionError, ProgressBar pbLoadAds) {
         this.recyclerView = recyclerView;
         this.context = context;
         this.svConnectionError = svConnectionError;
+        this.pbLoadAds = pbLoadAds;
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Loading...");
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog.show();
+        //progressDialog.show();
+        pbLoadAds.setVisibility(View.VISIBLE);
         super.onPreExecute();
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
+        pbLoadAds.setVisibility(View.INVISIBLE);
         if (feedItems!=null){//Internet connection was established
             svConnectionError.setVisibility(View.GONE);
             AdsAdapter adapter  = new AdsAdapter(context, feedItems);

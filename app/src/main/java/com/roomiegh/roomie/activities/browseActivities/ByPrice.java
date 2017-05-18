@@ -1,6 +1,6 @@
 package com.roomiegh.roomie.activities.browseActivities;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.activities.HostelDetailsActivity;
 import com.roomiegh.roomie.adapters.HostelListAdapter;
 import com.roomiegh.roomie.models.Hostel;
 import com.roomiegh.roomie.volley.AppSingleton;
@@ -35,13 +37,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.roomiegh.roomie.R.id.lvLocationHostels;
-import static com.roomiegh.roomie.R.id.pbByPrice;
-
 /*Prototyping by price page - Friday, 05/05/2017*/
 public class ByPrice extends AppCompatActivity {
     private static final String LOG_TAG = "ByPriceLog";
     private static final String REQUEST_TAG = "hostels_by_price_request";
+    private static final String BROWSE_TYPE = "price";
+
     private Toolbar toolbar;
     private SeekBar sbMax, sbMin;
     private EditText etMaxPrice, etMinPrice;
@@ -167,6 +168,22 @@ public class ByPrice extends AppCompatActivity {
                     llShowOrHidePrices.setVisibility(View.VISIBLE);
                 }
 
+            }
+        });
+
+        lvHostelsByPrice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle pushBrowseTypeBundle = new Bundle();
+                pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
+                int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
+                pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                Intent hostelDetailsIntent =
+                        new Intent(getApplicationContext(), HostelDetailsActivity.class);
+                hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
+
+                //open HostelDetailsActivity using intent and pass selectedHostel to it
+                startActivity(hostelDetailsIntent);
             }
         });
 

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ public class TabHome extends Fragment{
     RecyclerView recyclerView;
     ScrollView svConnectionError;
     Context ctx;
+    ProgressBar pbLoadAds;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class TabHome extends Fragment{
         /*ReadRSS readRSS =   new ReadRSS(getActivity(), recyclerView, svConnectionError);
         Log.d(HOME_TAG, "onCreateView: about to call ReadRSS");
         readRSS.execute();*/
-        ((MainActivity)getActivity()).doRSSRead(getActivity(),recyclerView,svConnectionError);
+        ((MainActivity)getActivity()).doRSSRead(getActivity(),recyclerView,svConnectionError,pbLoadAds);
 
         return view;
     }
@@ -49,7 +51,7 @@ public class TabHome extends Fragment{
         //wvHome = (WebView) view.findViewById(R.id.wvHome);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         svConnectionError = (ScrollView) view.findViewById(R.id.svConnectionError);
-
+        pbLoadAds = (ProgressBar) view.findViewById(R.id.pbLoadAds);
     }
 
     private boolean connectedToNetwork() {

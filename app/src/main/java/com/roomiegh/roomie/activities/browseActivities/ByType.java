@@ -1,7 +1,7 @@
 package com.roomiegh.roomie.activities.browseActivities;
 
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -20,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.activities.HostelDetailsActivity;
 import com.roomiegh.roomie.adapters.HostelListAdapter;
 import com.roomiegh.roomie.models.Hostel;
 import com.roomiegh.roomie.volley.AppSingleton;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 public class ByType extends AppCompatActivity {
     private static final String LOG_TAG = "ByTypeLog";
     private static final String REQUEST_TAG = "hostels_by_type_request";
+    private static final String BROWSE_TYPE = "type";
+
     private Toolbar toolbar;
     private ImageView ivType1, ivType2, ivType3, ivType4;
     private LinearLayout llRoomTypes;
@@ -56,6 +60,23 @@ public class ByType extends AppCompatActivity {
         }
 
         init();
+
+        lvHostelsByType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle pushBrowseTypeBundle = new Bundle();
+                //edit the string that is pushed to reflect room type
+                pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
+                int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
+                pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                Intent hostelDetailsIntent =
+                        new Intent(getApplicationContext(), HostelDetailsActivity.class);
+                hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
+
+                //open HostelDetailsActivity using intent and pass selectedHostel to it
+                startActivity(hostelDetailsIntent);
+            }
+        });
 
         ivType1.setOnClickListener(new View.OnClickListener() {
             @Override

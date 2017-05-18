@@ -1,6 +1,6 @@
 package com.roomiegh.roomie.activities.browseActivities;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.activities.HostelDetailsActivity;
 import com.roomiegh.roomie.adapters.HostelListAdapter;
 import com.roomiegh.roomie.models.Hostel;
 import com.roomiegh.roomie.volley.AppSingleton;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 public class ByName extends AppCompatActivity {
     private static final String LOG_TAG = "ByNameLog";
     private static final String REQUEST_TAG = "hostels_by_name_request";
+    private static final String BROWSE_TYPE = "name";
 
     Toolbar toolbar;
     String url = "http://roomiegh.herokuapp.com/hostel";
@@ -57,6 +59,23 @@ public class ByName extends AppCompatActivity {
         }
 
         init();
+
+        lvHostelsByName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle pushBrowseTypeBundle = new Bundle();
+                pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
+                int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
+                pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                Intent hostelDetailsIntent =
+                        new Intent(getApplicationContext(), HostelDetailsActivity.class);
+                hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
+
+
+                //open HostelDetailsActivity using intent and pass selectedHostel to it
+                startActivity(hostelDetailsIntent);
+            }
+        });
 
         callForDetails();
     }
