@@ -49,7 +49,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 ivEditProfilePic.setImageBitmap(CameraUtil.convertByteArrayToPhoto(displayedCurrentUser.getPhoto()));
             }
             tvProfileName.setText(displayedCurrentUser.getfName() + " " + displayedCurrentUser.getlName());
-            tvProfileRefNo.setText(displayedCurrentUser.getRefNo() + "");
+            //tvProfileRefNo.setText(displayedCurrentUser.getRefNo() + "");
             etEditProfileEmail.setText(displayedCurrentUser.getEmail());
             etEditProfilePhone.setText(displayedCurrentUser.getPhone());
 
@@ -70,7 +70,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 currentUser.setPhoto(imageData);
                 currentUser.setfName(displayedCurrentUser.getfName());
                 currentUser.setlName(displayedCurrentUser.getlName());
-                currentUser.setRefNo(displayedCurrentUser.getRefNo());
+                //currentUser.setRefNo(displayedCurrentUser.getRefNo());
 
                 currentUser.setPhone(etEditProfilePhone.getText() + "");
                 currentUser.setEmail(etEditProfileEmail.getText().toString());

@@ -8,19 +8,22 @@ import java.util.Arrays;
  */
 public class User implements Serializable {
     //personal info
-    private String fName,lName, gender, phone, email;
+    private String fName,lName, gender, phone, email, programme, nok, nokPhone;
     private byte[] photo;
-    private int refNo;
+
 
     public User() {
     }
 
-    public User(String fName, String lName, String gender, String phone, String email,  byte[] photo) {
+    public User(String fName, String lName, String gender, String phone, String email, String programme, String nok, String nokPhone, byte[] photo) {
         this.fName = fName;
         this.lName = lName;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
+        this.programme = programme;
+        this.nok = nok;
+        this.nokPhone = nokPhone;
         this.photo = photo;
     }
 
@@ -64,20 +67,36 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    public String getProgramme() {
+        return programme;
+    }
+
+    public void setProgramme(String programme) {
+        this.programme = programme;
+    }
+
+    public String getNok() {
+        return nok;
+    }
+
+    public void setNok(String nok) {
+        this.nok = nok;
+    }
+
+    public String getNokPhone() {
+        return nokPhone;
+    }
+
+    public void setNokPhone(String nokPhone) {
+        this.nokPhone = nokPhone;
+    }
+
     public byte[] getPhoto() {
         return photo;
     }
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
-    }
-
-    public int getRefNo() {
-        return refNo;
-    }
-
-    public void setRefNo(int refNo) {
-        this.refNo = refNo;
     }
 
     @Override
@@ -87,12 +106,16 @@ public class User implements Serializable {
 
         User user = (User) o;
 
-        if (refNo != user.refNo) return false;
         if (fName != null ? !fName.equals(user.fName) : user.fName != null) return false;
         if (lName != null ? !lName.equals(user.lName) : user.lName != null) return false;
         if (gender != null ? !gender.equals(user.gender) : user.gender != null) return false;
         if (phone != null ? !phone.equals(user.phone) : user.phone != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (programme != null ? !programme.equals(user.programme) : user.programme != null)
+            return false;
+        if (nok != null ? !nok.equals(user.nok) : user.nok != null) return false;
+        if (nokPhone != null ? !nokPhone.equals(user.nokPhone) : user.nokPhone != null)
+            return false;
         return Arrays.equals(photo, user.photo);
 
     }
@@ -104,8 +127,10 @@ public class User implements Serializable {
         result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (phone != null ? phone.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (programme != null ? programme.hashCode() : 0);
+        result = 31 * result + (nok != null ? nok.hashCode() : 0);
+        result = 31 * result + (nokPhone != null ? nokPhone.hashCode() : 0);
         result = 31 * result + Arrays.hashCode(photo);
-        result = 31 * result + refNo;
         return result;
     }
 
@@ -117,8 +142,10 @@ public class User implements Serializable {
                 ", gender='" + gender + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
+                ", programme='" + programme + '\'' +
+                ", nok='" + nok + '\'' +
+                ", nokPhone='" + nokPhone + '\'' +
                 ", photo=" + Arrays.toString(photo) +
-                ", refNo=" + refNo +
                 '}';
     }
 }

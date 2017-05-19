@@ -102,10 +102,10 @@ public class ByName extends AppCompatActivity {
                                     hostel.setNoOfRooms(jsonData.getInt("noOfRooms"));
                                     hostel.setRating(jsonData.getDouble("rating"));
 
-                                    /*//TODO parse JSON right to get images
-                                    hostelPicsArray = jsonData.getJSONArray("hostel_pics");
+                                    //TODO parse JSON right to get images
+                                    hostelPicsArray = jsonData.getJSONArray("hostel_pics_small");
                                     if (hostelPicsArray.length() > 0)
-                                        hostel.setPhotopath(hostelPicsArray.getJSONObject(0).getString("image_url"));*/
+                                        hostel.setPhotopath(hostelPicsArray.getJSONObject(0).getString("image_url"));
 
                                     //add hostel to list
                                     allHostels.add(hostel);

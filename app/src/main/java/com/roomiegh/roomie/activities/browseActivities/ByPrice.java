@@ -2,6 +2,7 @@ package com.roomiegh.roomie.activities.browseActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -46,7 +47,7 @@ public class ByPrice extends AppCompatActivity {
     private Toolbar toolbar;
     private SeekBar sbMax, sbMin;
     private EditText etMaxPrice, etMinPrice;
-    private ImageButton ibSearchByPrice;
+    private FloatingActionButton fabSearchByPrice;
     private ListView lvHostelsByPrice;
     private ProgressBar pbHostelsByPrice;
     private LinearLayout llShowOrHidePrices;
@@ -147,7 +148,7 @@ public class ByPrice extends AppCompatActivity {
             }
         });
 
-        ibSearchByPrice.setOnClickListener(new View.OnClickListener() {
+        fabSearchByPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (llShowOrHidePrices.getVisibility() == View.VISIBLE) {
@@ -193,7 +194,7 @@ public class ByPrice extends AppCompatActivity {
     private void hideSoftKeyboard() {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(ibSearchByPrice.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        inputMethodManager.hideSoftInputFromWindow(fabSearchByPrice.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     private boolean pricesCheckOut(int max, int min) {
@@ -266,7 +267,7 @@ public class ByPrice extends AppCompatActivity {
         sbMin = (SeekBar) findViewById(R.id.sbMin);
         etMaxPrice = (EditText) findViewById(R.id.etMaxPrice);
         etMinPrice = (EditText) findViewById(R.id.etMinPrice);
-        ibSearchByPrice = (ImageButton) findViewById(R.id.ibSearchByPrice);
+        fabSearchByPrice = (FloatingActionButton) findViewById(R.id.fabSearchByPrice);
         lvHostelsByPrice = (ListView) findViewById(R.id.lvHostelsByPrice);
         allHostels = new ArrayList<Hostel>();
         hostelListAdapter = new HostelListAdapter(getApplicationContext(), allHostels);

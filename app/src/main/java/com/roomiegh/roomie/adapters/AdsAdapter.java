@@ -46,8 +46,9 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             holder.description.setText(currentItem.getStringDescription());
         }else{
-            holder.description.setMovementMethod(LinkMovementMethod.getInstance());
             holder.description.setText(currentItem.getDescription());
+            holder.description.setMovementMethod(LinkMovementMethod.getInstance());
+            holder.description.setLinksClickable(true);
         }
         holder.date.setText(currentItem.getPubDate());
         //Picasso.with(context).load(currentItem.getThumbnailUrl()).into(holder.thumbnail);

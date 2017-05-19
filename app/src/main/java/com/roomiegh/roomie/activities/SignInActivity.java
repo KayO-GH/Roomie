@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,23 +23,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.util.PreferenceData;
+import com.roomiegh.roomie.util.PushUserUtil;
 
 
 public class SignInActivity extends AppCompatActivity {
-    private EditText etSignInEmail, etSignInPassword;
+    private EditText etSignInEmail, etSignInPassword, etConfirmPassword;
     private Button btSignIn, btSignUpInstead;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "authentication_tag";
-    private TextView tvForgotPassword;
+    private TextView tvForgotPassword, tvCreateAccountPrompt;
     boolean remember = false;
     ProgressDialog pdSignin;
+    Toolbar toolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
+        SignInActivity.this.setTitle("Sign In");
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
         init();
 
         mAuth = FirebaseAuth.getInstance();
@@ -60,6 +73,7 @@ public class SignInActivity extends AppCompatActivity {
         btSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pdSignin.setMessage("Signing in...");
                 pdSignin.show();
                 mAuth.signInWithEmailAndPassword(etSignInEmail.getText().toString(), etSignInPassword.getText().toString())
                         .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
@@ -78,7 +92,6 @@ public class SignInActivity extends AppCompatActivity {
                                 } else {
                                     PreferenceData.setLoggedInUserEmail(getApplicationContext(), etSignInEmail.getText().toString());
                                     PreferenceData.setUserLoggedInStatus(getApplicationContext(), true);
-                                    //TODO get user details and populate shared preferences
 
                                     setResult(RESULT_OK);
                                     Toast.makeText(SignInActivity.this, "Welcome",
@@ -94,7 +107,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (android.util.Patterns.EMAIL_ADDRESS.matcher(etSignInEmail.getText().toString()).matches()) {
-                    mAuth.sendPasswordResetEmail("user@example.com")
+                    mAuth.sendPasswordResetEmail(etSignInEmail.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -113,10 +126,63 @@ public class SignInActivity extends AppCompatActivity {
         btSignUpInstead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent registerInsteadIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
-                startActivityForResult(registerInsteadIntent, 200);
+                if (btSignIn.getVisibility() == View.VISIBLE) {
+                    //prepare screen to act as sign up page
+                    btSignIn.setVisibility(View.GONE);
+                    tvForgotPassword.setVisibility(View.GONE);
+                    tvCreateAccountPrompt.setVisibility(View.GONE);
+                    etConfirmPassword.setVisibility(View.VISIBLE);
+                    etSignInEmail.requestFocus();
+                    SignInActivity.this.setTitle("Sign Up");
+                } else {
+                    //validate password and email and attempt sign up
+                    validateAndSignUp();
+                }
+                /*Intent registerInsteadIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
+                startActivityForResult(registerInsteadIntent, 200);*/
             }
         });
+    }
+
+    private void validateAndSignUp() {
+        String pswd = etSignInPassword.getText().toString();
+        if (pswd.equals(etConfirmPassword.getText().toString()) && pswd.length() >= 8) {
+            if (android.util.Patterns.EMAIL_ADDRESS.matcher(etSignInEmail.getText().toString()).matches()) {
+                pdSignin.setMessage("Signing Up...");
+                pdSignin.show();
+                mAuth.createUserWithEmailAndPassword(etSignInEmail.getText().toString(), pswd)
+                        .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                pdSignin.dismiss();
+                                Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    PreferenceData.setLoggedInUserEmail(getApplicationContext(), etSignInEmail.getText().toString());
+                                    PreferenceData.setUserLoggedInStatus(getApplicationContext(), true);
+
+                                    setResult(RESULT_OK);
+                                    Toast.makeText(SignInActivity.this, "Welcome",
+                                            Toast.LENGTH_SHORT).show();
+                                    Intent updateProfileIntent = new Intent(getApplicationContext(),RegistrationActivity.class);
+                                    Bundle emailBundle = new Bundle();
+                                    emailBundle.putString(PushUserUtil.USER_EMAIL,etSignInEmail.getText().toString());
+                                    updateProfileIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY,emailBundle);
+                                    startActivity(updateProfileIntent);
+                                    finish();
+                                }
+
+                                // ...
+                            }
+                        });
+            }
+        }
     }
 
     @Override
@@ -150,7 +216,9 @@ public class SignInActivity extends AppCompatActivity {
         tvForgotPassword = (TextView) findViewById(R.id.tvForgotPassword);
         btSignUpInstead = (Button) findViewById(R.id.btSignUpInstead);
         pdSignin = new ProgressDialog(SignInActivity.this);
-        pdSignin.setMessage("Signing in...");
+
+        tvCreateAccountPrompt = (TextView) findViewById(R.id.tvCreateAccountPrompt);
+        etConfirmPassword = (EditText) findViewById(R.id.etConfirmPassword);
     }
 
     @Override
@@ -169,6 +237,21 @@ public class SignInActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }else if(id == android.R.id.home){
+            if (!(btSignIn.getVisibility() == View.VISIBLE)) {
+                //prepare screen to act as sign up page
+                btSignIn.setVisibility(View.VISIBLE);
+                tvForgotPassword.setVisibility(View.VISIBLE);
+                tvCreateAccountPrompt.setVisibility(View.VISIBLE);
+                etConfirmPassword.setVisibility(View.GONE);
+                etSignInEmail.setText("");
+                etSignInPassword.setText("");
+                SignInActivity.this.setTitle("Sign UI");
+            } else {
+                finish();
+            }
+
             return true;
         }
 
