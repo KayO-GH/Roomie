@@ -1,11 +1,9 @@
 package com.roomiegh.roomie.activities;
 
-import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -14,24 +12,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.roomiegh.roomie.R;
-import com.roomiegh.roomie.database.SignInManager;
-import com.roomiegh.roomie.models.SignIn;
-import com.roomiegh.roomie.util.PushUserUtil;
+import com.roomiegh.roomie.util.PreferenceData;
 
 
 public class SignInActivity extends AppCompatActivity {
     private EditText etSignInEmail, etSignInPassword;
-    private CheckBox cbRemember;
-    private Button btSignIn;
-    private SignIn signIn, signedIn;
-    private SignInManager signInManager;
+    private Button btSignIn, btSignUpInstead;
+    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "authentication_tag";
+    private TextView tvForgotPassword;
+    boolean remember = false;
+    ProgressDialog pdSignin;
 
 
     @Override
@@ -39,6 +40,8 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         init();
+
+        mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -55,45 +58,99 @@ public class SignInActivity extends AppCompatActivity {
         };
 
         btSignIn.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                //check email against password in signIn table
-                signIn.setEmail(etSignInEmail.getText()+"");
-                signedIn = signInManager.getSignIn(signIn);
+                pdSignin.show();
+                mAuth.signInWithEmailAndPassword(etSignInEmail.getText().toString(), etSignInPassword.getText().toString())
+                        .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                pdSignin.dismiss();
+                                Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                if(signedIn!=null){//if a sign in session matching the email address given is actually found
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "signInWithEmail", task.getException());
+                                    Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    PreferenceData.setLoggedInUserEmail(getApplicationContext(), etSignInEmail.getText().toString());
+                                    PreferenceData.setUserLoggedInStatus(getApplicationContext(), true);
+                                    //TODO get user details and populate shared preferences
 
-                        if ((signedIn.getPassword() + "").equals(etSignInPassword.getText() + "")) {
-                            Intent proceedIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            Bundle pushUser = new Bundle();
-                            pushUser.putString(PushUserUtil.USER_EMAIL,etSignInEmail.getText()+"");
-
-                            proceedIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY,pushUser);
-
-                            startActivity(proceedIntent);
-                            finishAffinity();
-                        } else
-                            Toast.makeText(getApplicationContext(),
-                                    "Wrong Password",Toast.LENGTH_SHORT).show();
-
-
-                }else
-                    Toast.makeText(getApplicationContext(),
-                            "No such email address",Toast.LENGTH_SHORT).show();
-
+                                    setResult(RESULT_OK);
+                                    Toast.makeText(SignInActivity.this, "Welcome",
+                                            Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }
+                        });
             }
         });
+
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (android.util.Patterns.EMAIL_ADDRESS.matcher(etSignInEmail.getText().toString()).matches()) {
+                    mAuth.sendPasswordResetEmail("user@example.com")
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(SignInActivity.this, "A reset email has been sent to " + etSignInEmail.getText().toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                } else {
+                    Toast.makeText(SignInActivity.this, "Enter your email address and hit 'Forgot Password' again", Toast.LENGTH_LONG).show();
+                    etSignInEmail.requestFocus();
+                }
+            }
+        });
+
+        btSignUpInstead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent registerInsteadIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
+                startActivityForResult(registerInsteadIntent, 200);
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 200 && resultCode == RESULT_OK) {
+            //successful request, set result ok and finish activity
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 
     private void init() {
         etSignInEmail = (EditText) findViewById(R.id.etSignInEmail);
         etSignInPassword = (EditText) findViewById(R.id.etSignInPassword);
-        cbRemember = (CheckBox) findViewById(R.id.cbRemember);
         btSignIn = (Button) findViewById(R.id.btSignIn);
-        signIn = new SignIn();
-        signedIn = new SignIn();
-        signInManager = new SignInManager(getApplicationContext());
+        tvForgotPassword = (TextView) findViewById(R.id.tvForgotPassword);
+        btSignUpInstead = (Button) findViewById(R.id.btSignUpInstead);
+        pdSignin = new ProgressDialog(SignInActivity.this);
+        pdSignin.setMessage("Signing in...");
     }
 
     @Override

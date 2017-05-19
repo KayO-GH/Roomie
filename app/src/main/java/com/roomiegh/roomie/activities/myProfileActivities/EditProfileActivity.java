@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roomiegh.roomie.R;
-import com.roomiegh.roomie.database.GuardianManager;
-import com.roomiegh.roomie.database.TenantManager;
-import com.roomiegh.roomie.models.Guardian;
-import com.roomiegh.roomie.models.Tenant;
+import com.roomiegh.roomie.models.User;
 import com.roomiegh.roomie.util.CameraUtil;
 import com.roomiegh.roomie.util.PushUserUtil;
 
@@ -29,13 +25,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText etEditProfilePhone, etEditProfilePhone2, etEditProfileEmail,
             etEditProfileInstitution, etEditProfileProgramme, etEditProfileYear, etEditProfileMonth,
             etEditProfileDay, etEditProfileGuardName, etEditProfileGuardPhone;
-    private TextView tvEditProfileRefNo, tvEditProfileName, tvEditProfileHostel, tvEditProfileRoomNum;
+    private TextView tvProfileRefNo, tvProfileName, tvProfileHostel, tvProfileRoomNum;
     private byte[] imageData = new byte[1000];
     private Bitmap photo;
-    private Tenant currentTenant, displayedCurrentTenant;
-    private Guardian currentGuardian, displayedCurrentGuardian;
-    private TenantManager tenantManager;
-    private GuardianManager guardianManager;
+    private User currentUser, displayedCurrentUser;
     private boolean isUpdated = false;
 
     @Override
@@ -48,42 +41,20 @@ public class EditProfileActivity extends AppCompatActivity {
 
         init();
 
-        currentTenant.setEmail(currentUserEmail);
-        displayedCurrentTenant =
-                new TenantManager(getApplicationContext()).getTenantByEmail(currentTenant);
-
-        currentGuardian.setRefNo(displayedCurrentTenant.getRefNo());
-        displayedCurrentGuardian =
-                new GuardianManager(getApplicationContext()).getGuardian(currentGuardian);
+        currentUser.setEmail(currentUserEmail);
 
         //setting profile text for the tenant
-        if (displayedCurrentTenant != null) {
-            if (displayedCurrentTenant.getPhoto() != null) {
-                ivEditProfilePic.setImageBitmap(CameraUtil.convertByteArrayToPhoto(displayedCurrentTenant.getPhoto()));
+        if (displayedCurrentUser != null) {
+            if (displayedCurrentUser.getPhoto() != null) {
+                ivEditProfilePic.setImageBitmap(CameraUtil.convertByteArrayToPhoto(displayedCurrentUser.getPhoto()));
             }
-            tvEditProfileName.setText(displayedCurrentTenant.getfName() + " " + displayedCurrentTenant.getlName());
-            tvEditProfileRefNo.setText(displayedCurrentTenant.getRefNo() + "");
-            etEditProfileEmail.setText(displayedCurrentTenant.getEmail());
-            etEditProfilePhone.setText(displayedCurrentTenant.getPhone());
-            if (displayedCurrentTenant.getPhone2() != null) {
-                etEditProfilePhone2.setText(displayedCurrentTenant.getPhone2());
-            }
-            StringBuffer dateCutter = new StringBuffer(displayedCurrentTenant.getDob());
-            etEditProfileYear.setText(dateCutter.subSequence(0, 4));
-            etEditProfileMonth.setText(dateCutter.subSequence(5, 7));
-            etEditProfileDay.setText(dateCutter.subSequence(8, 10));
+            tvProfileName.setText(displayedCurrentUser.getfName() + " " + displayedCurrentUser.getlName());
+            tvProfileRefNo.setText(displayedCurrentUser.getRefNo() + "");
+            etEditProfileEmail.setText(displayedCurrentUser.getEmail());
+            etEditProfilePhone.setText(displayedCurrentUser.getPhone());
 
         } else
             Toast.makeText(getApplicationContext(), "Profile not found", Toast.LENGTH_SHORT).show();
-
-        //setting profile text for the guardian
-        if (displayedCurrentGuardian != null) {
-            etEditProfileGuardPhone.setText(displayedCurrentGuardian.getGuardPhone());
-            etEditProfileGuardName.setText(displayedCurrentGuardian.getGuardFName() + " " + displayedCurrentGuardian.getGuardLName());
-        } else
-            Toast.makeText(getApplicationContext(), "Guardian not found", Toast.LENGTH_SHORT).show();
-
-        //Toast.makeText(this,currentUserEmail,Toast.LENGTH_SHORT).show();
 
         ivEditProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,24 +67,14 @@ public class EditProfileActivity extends AppCompatActivity {
         btEditProfileSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentTenant.setPhoto(imageData);
-                currentTenant.setfName(displayedCurrentTenant.getfName());
-                currentTenant.setlName(displayedCurrentTenant.getlName());
-                currentTenant.setRefNo(displayedCurrentTenant.getRefNo());
+                currentUser.setPhoto(imageData);
+                currentUser.setfName(displayedCurrentUser.getfName());
+                currentUser.setlName(displayedCurrentUser.getlName());
+                currentUser.setRefNo(displayedCurrentUser.getRefNo());
 
-                currentTenant.setPhone(etEditProfilePhone.getText() + "");
-                currentTenant.setPhone2(etEditProfilePhone2.getText() + "");
-                currentTenant.setEmail(etEditProfileEmail.getText().toString());
-                currentTenant.setDob(
-                        etEditProfileYear.getText() + "-" + etEditProfileMonth.getText()
-                                + "-" + etEditProfileDay.getText());
-                //saving into db
-                if (tenantManager.updateTenant(currentTenant)) {
-                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
-                    isUpdated = true;
-                } else {
-                    Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG);
-                }
+                currentUser.setPhone(etEditProfilePhone.getText() + "");
+                currentUser.setEmail(etEditProfileEmail.getText().toString());
+
                 Intent sendStatus = new Intent();
                 sendStatus.putExtra("bool",isUpdated);
                 setResult(RESULT_OK, sendStatus);
@@ -134,30 +95,16 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void init() {
         ivEditProfilePic = (ImageView) findViewById(R.id.ivEditProfilePic);
-
-        tvEditProfileRefNo = (TextView) findViewById(R.id.tvEditProfileRefNo);
-        tvEditProfileName = (TextView) findViewById(R.id.tvEditProfileName);
-        tvEditProfileHostel = (TextView) findViewById(R.id.tvEditProfileHostel);
-        tvEditProfileRoomNum = (TextView) findViewById(R.id.tvEditProfileRoomNum);
-
+        tvProfileName = (TextView) findViewById(R.id.tvProfileName);
         etEditProfilePhone = (EditText) findViewById(R.id.etEditProfilePhone);
-        etEditProfilePhone2 = (EditText) findViewById(R.id.etEditProfilePhone2);
-        etEditProfileYear = (EditText) findViewById(R.id.etEditProfileYear);
-        etEditProfileMonth = (EditText) findViewById(R.id.etEditProfileMonth);
-        etEditProfileDay = (EditText) findViewById(R.id.etEditProfileDay);
         etEditProfileEmail = (EditText) findViewById(R.id.etEditProfileEmail);
-        etEditProfileInstitution = (EditText) findViewById(R.id.etEditProfileInstitution);
         etEditProfileProgramme = (EditText) findViewById(R.id.etEditProfileProgramme);
         etEditProfileGuardName = (EditText) findViewById(R.id.etEditProfileGuardName);
         etEditProfileGuardPhone = (EditText) findViewById(R.id.etEditProfileGuardPhone);
 
         btEditProfileSave = (Button) findViewById(R.id.btEditProfileSave);
 
-        currentTenant = new Tenant();
-        currentGuardian = new Guardian();
-
-        tenantManager = new TenantManager(this);
-        guardianManager = new GuardianManager(this);
+        currentUser = new User();
     }
 
     @Override

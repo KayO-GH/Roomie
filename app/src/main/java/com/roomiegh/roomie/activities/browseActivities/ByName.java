@@ -66,7 +66,7 @@ public class ByName extends AppCompatActivity {
                 Bundle pushBrowseTypeBundle = new Bundle();
                 pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
                 int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
-                pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                pushBrowseTypeBundle.putInt("hostel_id", hostelID);
                 Intent hostelDetailsIntent =
                         new Intent(getApplicationContext(), HostelDetailsActivity.class);
                 hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
@@ -90,6 +90,7 @@ public class ByName extends AppCompatActivity {
 
                         if (response.length() != 0) {
                             JSONObject jsonData;
+                            JSONArray hostelPicsArray;
                             Hostel hostel;
                             try {
                                 for (int i = 0; i < response.length(); i++) {
@@ -100,8 +101,11 @@ public class ByName extends AppCompatActivity {
                                     hostel.setLocationId(jsonData.getInt("locations_location_id"));
                                     hostel.setNoOfRooms(jsonData.getInt("noOfRooms"));
                                     hostel.setRating(jsonData.getDouble("rating"));
-                                    /*if (jsonData.getString("photoPath") != null)
-                                        hostel.setPhotopath(jsonData.getString("photoPath"));*/
+
+                                    /*//TODO parse JSON right to get images
+                                    hostelPicsArray = jsonData.getJSONArray("hostel_pics");
+                                    if (hostelPicsArray.length() > 0)
+                                        hostel.setPhotopath(hostelPicsArray.getJSONObject(0).getString("image_url"));*/
 
                                     //add hostel to list
                                     allHostels.add(hostel);
@@ -158,7 +162,7 @@ public class ByName extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }else if(id == android.R.id.home){
+        } else if (id == android.R.id.home) {
             finish();
             return true;
         }
