@@ -8,29 +8,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.models.Room;
 import com.roomiegh.roomie.util.PushUserUtil;
 
 public class ViewRoomActivity extends AppCompatActivity {
-    private WebView webView;
+    String url = "http://roomiegh.herokuapp.com/room/";//append room id
+    Room thisRoom;
+    TextView tvRoomDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_room);
 
-        Bundle receivedUserName = getIntent().getBundleExtra(PushUserUtil.PUSH_INTENT_KEY);
-        String userName = receivedUserName.getString(PushUserUtil.NAME_KEY);
-
-        webView = (WebView) findViewById(R.id.webView);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("http://www.roomiegh.com/table.php?user=" + userName);
-
-        //Test to check if username has been found
-        //Toast.makeText(getApplicationContext(),userName,Toast.LENGTH_SHORT).show();
+        Bundle receivedId = getIntent().getBundleExtra("room_bundle");
+        thisRoom = (Room) receivedId.getSerializable("this_room");
 
     }
 

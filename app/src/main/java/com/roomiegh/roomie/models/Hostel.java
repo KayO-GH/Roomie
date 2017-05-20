@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Hostel implements Serializable{
     int id, noOfRooms, locationId;
     //TODO change photopath to ArrayList of photopaths when we get multiple photos per hostel
-    String name, photopath;
+    String name, photopath, location;
     double rating;
     String description;
     ArrayList<String> allFacilities;
@@ -18,13 +18,16 @@ public class Hostel implements Serializable{
     public Hostel() {
     }
 
-    public Hostel(int id, int noOfRooms, int locationId, String name, String photopath, double rating) {
+    public Hostel(int id, int noOfRooms, int locationId, String name, String photopath, String location, double rating, String description, ArrayList<String> allFacilities) {
         this.id = id;
         this.noOfRooms = noOfRooms;
         this.locationId = locationId;
         this.name = name;
         this.photopath = photopath;
+        this.location = location;
         this.rating = rating;
+        this.description = description;
+        this.allFacilities = allFacilities;
     }
 
     public int getId() {
@@ -91,6 +94,14 @@ public class Hostel implements Serializable{
         this.allFacilities = allFacilities;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,6 +115,8 @@ public class Hostel implements Serializable{
         if (Double.compare(hostel.rating, rating) != 0) return false;
         if (name != null ? !name.equals(hostel.name) : hostel.name != null) return false;
         if (photopath != null ? !photopath.equals(hostel.photopath) : hostel.photopath != null)
+            return false;
+        if (location != null ? !location.equals(hostel.location) : hostel.location != null)
             return false;
         if (description != null ? !description.equals(hostel.description) : hostel.description != null)
             return false;
@@ -120,6 +133,7 @@ public class Hostel implements Serializable{
         result = 31 * result + locationId;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (photopath != null ? photopath.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
         temp = Double.doubleToLongBits(rating);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (description != null ? description.hashCode() : 0);
@@ -135,6 +149,7 @@ public class Hostel implements Serializable{
                 ", locationId=" + locationId +
                 ", name='" + name + '\'' +
                 ", photopath='" + photopath + '\'' +
+                ", location='" + location + '\'' +
                 ", rating=" + rating +
                 ", description='" + description + '\'' +
                 ", allFacilities=" + allFacilities +

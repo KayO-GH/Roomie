@@ -1,5 +1,6 @@
 package com.roomiegh.roomie.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -82,6 +83,12 @@ public class RoomsListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO View the room and register if you want
+                Intent viewRoomIntent = new Intent(RoomsListActivity.this, ViewRoomActivity.class);
+                Bundle roomBundle = new Bundle();
+                roomBundle.putSerializable("this_room",((Room) roomListAdapter.getItem(position)));
+
+                viewRoomIntent.putExtra("room_bundle",roomBundle);
+                startActivity(viewRoomIntent);
             }
         });
 
