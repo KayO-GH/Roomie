@@ -43,6 +43,9 @@ public class RoomsListActivity extends AppCompatActivity {
     RoomListAdapter roomListAdapter;
     String browseType = "";
     int hostelID = -1;
+    int roomType = -1;
+    int maxPrice = -1;
+    int minPrice = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +63,29 @@ public class RoomsListActivity extends AppCompatActivity {
         final Bundle receivedInfo = getIntent().getBundleExtra("type_bundle");
         browseType = receivedInfo.getString("browse_type");
         hostelID = receivedInfo.getInt("hostel_id");
+        if(browseType.equals("type"))
+            roomType = receivedInfo.getInt("room_type");
+        if(browseType.equals("price")){
+            maxPrice = receivedInfo.getInt("max_price");
+            minPrice = receivedInfo.getInt("min_price");
+        }
+
+
         //TODO set title to HostelName
+        if(receivedInfo.getString("hostel_name") != null)
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(receivedInfo.getString("hostel_name")+" Rooms");
 
         init();
 
         lvRoomsByHostel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                //TODO View the room and register if you want
             }
         });
 
-        callForRooms(hostelID);
+        callForRooms(hostelID, browseType);
     }
 
     private void init() {
@@ -82,7 +96,7 @@ public class RoomsListActivity extends AppCompatActivity {
         lvRoomsByHostel.setAdapter(roomListAdapter);
     }
 
-    private void callForRooms(int hostelID) {
+    private void callForRooms(int hostelID, final String browseType) {
         pbHostelRooms.setVisibility(View.VISIBLE);
         JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, url+hostelID, null,
                 new Response.Listener<JSONArray>() {
@@ -110,7 +124,19 @@ public class RoomsListActivity extends AppCompatActivity {
                                         room.setPrice(roomObj.getInt("price"));
 
                                         //add hostel to list
-                                        allRooms.add(room);
+                                        if(browseType.equals("type")){
+                                            //check if room matches original room type
+                                            if(room.getType() == roomType)
+                                                allRooms.add(room);
+                                        }else if(browseType.equals("price")){
+                                            //check if price matches original price range
+                                            if(room.getPrice()<maxPrice && room.getPrice()>minPrice)
+                                                allRooms.add(room);
+                                        }else{
+                                            //add all rooms
+                                            allRooms.add(room);
+                                        }
+
                                         Log.d(LOG_TAG, "Added: " + room.getRoomNum());
                                     }
                                 }

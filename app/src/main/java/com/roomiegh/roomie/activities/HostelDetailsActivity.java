@@ -46,6 +46,8 @@ public class HostelDetailsActivity extends AppCompatActivity {
     String url = "http://roomiegh.herokuapp.com/hostel/";
 
     ArrayList<String> hostelFacilities;
+    Bundle receivedInfoBundle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,9 @@ public class HostelDetailsActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        final Bundle receivedInfo = getIntent().getBundleExtra("type_bundle");
-        browseType = receivedInfo.getString("browse_type");
-        hostelID = receivedInfo.getInt("hostel_id");
+        receivedInfoBundle = getIntent().getBundleExtra("type_bundle");
+        browseType = receivedInfoBundle.getString("browse_type");
+        hostelID = receivedInfoBundle.getInt("hostel_id");
 
         init();
 
@@ -72,7 +74,7 @@ public class HostelDetailsActivity extends AppCompatActivity {
                 //TODO go to view rooms list acivity with browse type, if browse type is price or room type, use those parameters
                 Intent viewRoomIntent = new Intent(HostelDetailsActivity.this,RoomsListActivity.class);
                 //forward type bundle to view rooms List page
-                viewRoomIntent.putExtra("type_bundle",receivedInfo);
+                viewRoomIntent.putExtra("type_bundle", receivedInfoBundle);
                 startActivity(viewRoomIntent);
             }
         });
@@ -140,6 +142,7 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                     rbHostelDetailsRating.setNumStars((int) hostel.getRating());
                                     tvHostelDescription.setText(hostel.getDescription());
                                     tvHostelName.setText(hostel.getName());
+                                    receivedInfoBundle.putString("hsotel_name",hostel.getName());
                                     //list facilitites
                                     String facilityList = "";
                                     for (String facility : hostelFacilities)

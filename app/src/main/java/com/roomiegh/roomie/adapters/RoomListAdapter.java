@@ -76,7 +76,8 @@ public class RoomListAdapter extends BaseAdapter{
         viewHolder.tvRoomListType.setText(room.getType()+"");
         viewHolder.tvRoomListPrice.setText(room.getPrice()+"");
         int[] shapeArray = {R.drawable.color_blue,R.drawable.color_gold,R.drawable.color_green,R.drawable.color_orange,R.drawable.color_red,R.drawable.color_violet};
-        viewHolder.ivRoomNumBkgrnd.setImageResource(shapeArray[new Random().nextInt(shapeArray.length)]);
+        //color codes will match room type
+        viewHolder.ivRoomNumBkgrnd.setImageResource(shapeArray[room.getType()-1]);
         viewHolder.tvListRoomNum.setText(room.getRoomNum());
 
         return convertView;

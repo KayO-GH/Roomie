@@ -45,6 +45,7 @@ public class ByType extends AppCompatActivity {
     ArrayList<Hostel> allHostels;
     HostelListAdapter hostelListAdapter;
     private ProgressBar pbByType;
+    int roomType = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class ByType extends AppCompatActivity {
                 pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
                 int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
                 pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                pushBrowseTypeBundle.putInt("room_type",roomType);
                 Intent hostelDetailsIntent =
                         new Intent(getApplicationContext(), HostelDetailsActivity.class);
                 hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
@@ -82,28 +84,32 @@ public class ByType extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ByType.this.setTitle("1-in-1");
-                callForHostelsByType(1);
+                roomType = 1;
+                callForHostelsByType(roomType);
             }
         });
         ivType2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ByType.this.setTitle("2-in-1");
-                callForHostelsByType(2);
+                roomType = 2;
+                callForHostelsByType(roomType);
             }
         });
         ivType3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ByType.this.setTitle("3-in-1");
-                callForHostelsByType(3);
+                roomType = 3;
+                callForHostelsByType(roomType);
             }
         });
         ivType4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ByType.this.setTitle("4-in-1");
-                callForHostelsByType(4);
+                roomType = 4;
+                callForHostelsByType(roomType);
             }
         });
 

@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //receive current user information
-        /*Bundle receivedInfo = getIntent().getBundleExtra(PushUserUtil.PUSH_INTENT_KEY);
-        currentUserEmail = receivedInfo.getString(PushUserUtil.USER_EMAIL);*/
-        //fragment.setArguments(receivedInfo);
+        /*Bundle receivedInfoBundle = getIntent().getBundleExtra(PushUserUtil.PUSH_INTENT_KEY);
+        currentUserEmail = receivedInfoBundle.getString(PushUserUtil.USER_EMAIL);*/
+        //fragment.setArguments(receivedInfoBundle);
 
         // Creating Toolbar and setting it as Toolbar for the activity
 

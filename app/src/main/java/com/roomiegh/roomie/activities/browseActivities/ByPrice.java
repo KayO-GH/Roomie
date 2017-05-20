@@ -54,6 +54,7 @@ public class ByPrice extends AppCompatActivity {
     String price_specific_url = "http://roomiegh.herokuapp.com/roomprice/";
     ArrayList<Hostel> allHostels;
     HostelListAdapter hostelListAdapter;
+    int max = -1,min = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +156,8 @@ public class ByPrice extends AppCompatActivity {
                     //hide view and try to search
                     llShowOrHidePrices.setVisibility(View.GONE);
                     if (pricesCheckOut(sbMax.getProgress(), sbMin.getProgress())) {
+                        max = sbMax.getProgress();
+                        min = sbMin.getProgress();
                         //prices are alright, search hostels
                         queryHostelsByPrice(sbMax.getProgress(), sbMin.getProgress());
                         hideSoftKeyboard();
@@ -179,6 +182,8 @@ public class ByPrice extends AppCompatActivity {
                 pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
                 int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
                 pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                pushBrowseTypeBundle.putInt("max_price",max);
+                pushBrowseTypeBundle.putInt("min_price",min);
                 Intent hostelDetailsIntent =
                         new Intent(getApplicationContext(), HostelDetailsActivity.class);
                 hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
