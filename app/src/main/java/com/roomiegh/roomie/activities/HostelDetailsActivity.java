@@ -1,5 +1,7 @@
 package com.roomiegh.roomie.activities;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,6 +40,7 @@ public class HostelDetailsActivity extends AppCompatActivity {
     TextView tvHostelDescription, tvHostelName, tvFacilities;
     RatingBar rbHostelDetailsRating;
     ProgressBar pbHostelDetails;
+    FloatingActionButton fabViewRooms;
 
     Toolbar toolbar;
     String url = "http://roomiegh.herokuapp.com/hostel/";
@@ -57,11 +60,22 @@ public class HostelDetailsActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        Bundle receivedInfo = getIntent().getBundleExtra("type_bundle");
+        final Bundle receivedInfo = getIntent().getBundleExtra("type_bundle");
         browseType = receivedInfo.getString("browse_type");
         hostelID = receivedInfo.getInt("hostel_id");
 
         init();
+
+        fabViewRooms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO go to view rooms list acivity with browse type, if browse type is price or room type, use those parameters
+                Intent viewRoomIntent = new Intent(HostelDetailsActivity.this,RoomsListActivity.class);
+                //forward type bundle to view rooms List page
+                viewRoomIntent.putExtra("type_bundle",receivedInfo);
+                startActivity(viewRoomIntent);
+            }
+        });
 
         callForDetails(hostelID);
     }
@@ -119,6 +133,7 @@ public class HostelDetailsActivity extends AppCompatActivity {
 
                                 pbHostelDetails.setVisibility(View.GONE);
                                 nSView.setVisibility(View.VISIBLE);
+                                fabViewRooms.setVisibility(View.VISIBLE);
 
                                 //set views using hostel data
                                 if (hostel != null) {
@@ -173,6 +188,7 @@ public class HostelDetailsActivity extends AppCompatActivity {
         tvHostelName = (TextView) findViewById(R.id.tvHostelName);
         tvFacilities = (TextView) findViewById(R.id.tvFacilities);
         nSView = (NestedScrollView) findViewById(R.id.nsView);
+        fabViewRooms = (FloatingActionButton) findViewById(R.id.fabViewRooms);
     }
 
     @Override
