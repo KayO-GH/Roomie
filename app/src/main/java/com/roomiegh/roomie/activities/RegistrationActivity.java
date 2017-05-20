@@ -11,34 +11,60 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.models.Hostel;
 import com.roomiegh.roomie.models.User;
+import com.roomiegh.roomie.util.PreferenceData;
 import com.roomiegh.roomie.util.PushUserUtil;
+import com.roomiegh.roomie.volley.AppSingleton;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.view.View.GONE;
 
 
 public class RegistrationActivity extends AppCompatActivity {
     private static final int PICK_FROM_STORAGE = 100;
-    private static final int TAKE_IMAGE = 200;
+    private static final int TAKE_PICTURE = 200;
+    private static final String LOG_TAG = "RegisterUserLog";
+    private static final String REQUEST_TAG = "UserPostRequest";
+    private static String picName = "";
     private EditText etRegFirstName, etRegLastName, etRegPhone, etRegEmail, etRegProgramme, etRegNOK, etRegNOKPhone;
     private Button btRegSave, btRegCancel;
     private CheckBox cbRegMale, cbRegFemale;
@@ -48,16 +74,27 @@ public class RegistrationActivity extends AppCompatActivity {
     //private SignInManager signInManager;
     private String email;
     private ImageView ivRegImage;
-    private ProgressBar pbUploadingPic;
+    private ProgressBar pbUploadingPic, pbUploadingData;
+    private Spinner spYears;
+    int year = 0;
 
     private StorageReference mStorageRef;
     Uri file;
+    Uri downloadUrl = null;
+    Uri profilePicUri = null;
+    private String url = "http://roomiegh.herokuapp.com/roomieuser";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         init();
+
+        //set spinner values
+        Integer[] items = new Integer[]{1,2,3,4,5,6,7};
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(RegistrationActivity.this,android.R.layout.simple_spinner_item, items);
+        spYears.setAdapter(adapter);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
@@ -85,6 +122,18 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
+        spYears.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                year = position+1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         //cancel button
         btRegCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,28 +152,38 @@ public class RegistrationActivity extends AppCompatActivity {
                     if (cbRegFemale.isChecked() || cbRegMale.isChecked()) {
                         //check gender
                         if (cbRegMale.isChecked())
-                            gender = "male";
+                            gender = "M";
                         else
-                            gender = "female";
+                            gender = "F";
 
                         //assigning data to required variables for user
                         user.setfName(etRegFirstName.getText().toString());
-                        user.setlName(etRegLastName.getText().toString());
-                        user.setEmail(email);
-                        user.setPhone(etRegPhone.getText().toString());
+                        user.setlName(etRegLastName.getText().toString());// concatenate names
+                        user.setProgramme(etRegProgramme.getText().toString());
+                        user.setYear(year);
                         user.setGender(gender);
+                        user.setPhone(etRegPhone.getText().toString());
+                        user.setEmail(email);
+                        if(downloadUrl != null)
+                            user.setPicPath(downloadUrl.getPath());
+                        user.setNok(etRegNOK.getText().toString());
+                        user.setNokPhone(etRegNOKPhone.getText().toString());
+
+
                         //putting data into database at required tables
-                        //TODO make POST request to
+                        //TODO make POST request and save results to SPs on success
+                        makeUserPostRequest(user);
 
                         //Send user email to necessary activities and fragments
-                        Intent proceedIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        Bundle pushUser = new Bundle();
+                        //Intent proceedIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        /*Bundle pushUser = new Bundle();
                         pushUser.putString(PushUserUtil.USER_EMAIL, email);
 
-                        proceedIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY, pushUser);
+                        proceedIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY, pushUser);*/
 
-                        startActivity(proceedIntent);
-                        finishAffinity();
+                        //TODO move to next activity if successful
+                        /*startActivity(proceedIntent);
+                        finishAffinity();*/
 
 
                     } else
@@ -168,6 +227,98 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
+        btRegCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (downloadUrl != null)
+                    PreferenceData.clearProfilePic(RegistrationActivity.this);
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                finishAffinity();
+            }
+        });
+
+        /*btRegSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO upload contact details to the server
+                //on success, save them in the shared preferences
+                makeUserPostRequest();
+            }
+        });*/
+
+
+    }
+
+    private void makeUserPostRequest(final User user) {
+        //pbByName.setVisibility(View.VISIBLE);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("name", user.getfName()+" "+user.getlName());
+        params.put("course", user.getProgramme());
+        params.put("year", user.getYear()+"");
+        params.put("gender", user.getGender());
+        params.put("phone", user.getPhone());
+        params.put("email", user.getEmail());
+        params.put("photoPath", user.getPicPath());
+        params.put("guardian_name", user.getNok());
+        params.put("guardian_phone", user.getNokPhone());
+
+        pbUploadingData.setVisibility(View.VISIBLE);
+        JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url,new JSONObject(params),
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        pbUploadingData.setVisibility(View.GONE);
+                        // response
+                        Log.d("Response", response.toString());
+                        Toast.makeText(RegistrationActivity.this, "Profie Saved", Toast.LENGTH_SHORT).show();
+                        PreferenceData.setProfileData(RegistrationActivity.this,user);
+                        if(profilePicUri != null)
+                            PreferenceData.setProfilePicPath(RegistrationActivity.this,profilePicUri.getPath());
+
+                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        finishAffinity();
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        pbUploadingData.setVisibility(View.GONE);
+                        Log.d("Error.Response", error.toString());
+                        error.printStackTrace();
+                        Toast.makeText(RegistrationActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("name", user.getfName()+" "+user.getlName());
+                params.put("course", user.getProgramme());
+                params.put("year", user.getYear()+"");
+                params.put("gender", user.getGender());
+                params.put("phone", user.getPhone());
+                params.put("email", user.getEmail());
+                params.put("photoPath", user.getPicPath());
+                params.put("guardian_name", user.getNok());
+                params.put("guardian_phone", user.getNokPhone());
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("Api-Token","RoomieAppGH");
+                headers.put("Content-Type","application/json");
+                return headers;
+            }
+        };
+        // Adding string request to request queue
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(postRequest, REQUEST_TAG);
 
     }
 
@@ -176,7 +327,7 @@ public class RegistrationActivity extends AppCompatActivity {
         file = Uri.fromFile(getOutputMediaFile());
         intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
 
-        startActivityForResult(intent, TAKE_IMAGE);
+        startActivityForResult(intent, TAKE_PICTURE);
     }
 
     private static File getOutputMediaFile() {
@@ -184,14 +335,13 @@ public class RegistrationActivity extends AppCompatActivity {
                 Environment.DIRECTORY_PICTURES), "CameraDemo");
 
         if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
+            mediaStorageDir.mkdirs();
         }
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        picName = "IMG_" + timeStamp + ".jpg";
         return new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_" + timeStamp + ".jpg");
+                picName);
     }
 
     @Override
@@ -199,10 +349,10 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             pbUploadingPic.setVisibility(View.VISIBLE);
-            Uri fileFromStorage = data.getData();
             if (requestCode == PICK_FROM_STORAGE) {
+                Uri fileFromStorage = data.getData();
                 uploadAndSet(fileFromStorage);
-            } else if (requestCode == TAKE_IMAGE) {
+            } else if (requestCode == TAKE_PICTURE) {
                 uploadAndSet(file);
             }
         } else {
@@ -212,7 +362,8 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void uploadAndSet(final Uri fileUri) {
-        StorageReference profileRef = mStorageRef.child("profile_pic/rivers.jpg");
+        profilePicUri = fileUri;
+        StorageReference profileRef = mStorageRef.child("profile_pics/" + new File(String.valueOf(fileUri)).getName());
 
         profileRef.putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -220,9 +371,11 @@ public class RegistrationActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
                         //TODO upload the download url as photopath for this user
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        downloadUrl = taskSnapshot.getDownloadUrl();
                         Picasso.with(RegistrationActivity.this).load(fileUri).fit().centerCrop().into(ivRegImage);
-                        pbUploadingPic.setVisibility(View.GONE);
+                        ivRegImage.setPadding(0, 0, 0, 0);
+                        pbUploadingPic.setVisibility(GONE);
+                        PreferenceData.setProfilePicPath(RegistrationActivity.this, fileUri.getPath());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -231,7 +384,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         // Handle unsuccessful uploads
                         // ...
                         Toast.makeText(RegistrationActivity.this, "Usuccessful upload", Toast.LENGTH_SHORT).show();
-                        pbUploadingPic.setVisibility(View.GONE);
+                        pbUploadingPic.setVisibility(GONE);
                     }
                 });
     }
@@ -241,7 +394,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 (etRegLastName.getText().length() == 0) ||
                 (!cbRegFemale.isChecked() && !cbRegMale.isChecked()) ||
                 (etRegPhone.getText().length() == 0) ||
-                (etRegProgramme.getText().length() == 0)) {
+                (etRegProgramme.getText().length() == 0)||
+                year == 0) {
             requiredFilled = false;
         } else {
             requiredFilled = true;
@@ -252,7 +406,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void init() {
         etRegFirstName = (EditText) findViewById(R.id.etRegFirstName);
         etRegLastName = (EditText) findViewById(R.id.etRegLastName);
-        etRegPhone = (EditText) findViewById(R.id.etRegPhone);
+        etRegPhone = (EditText) findViewById(R.id.etEditProfilePhone);
         btRegSave = (Button) findViewById(R.id.btEditProfileSave);
         btRegCancel = (Button) findViewById(R.id.btEditProfileCancel);
         cbRegMale = (CheckBox) findViewById(R.id.cbRegMale);
@@ -261,6 +415,11 @@ public class RegistrationActivity extends AppCompatActivity {
         etRegEmail = (EditText) findViewById(R.id.etEditProfileEmail);
         ivRegImage = (ImageView) findViewById(R.id.ivEditProfilePic);
         pbUploadingPic = (ProgressBar) findViewById(R.id.pbUploadingProfilePic);
+        spYears = (Spinner) findViewById(R.id.spProfileYear);
+        etRegProgramme = (EditText) findViewById(R.id.etEditProfileProgramme);
+        etRegNOK = (EditText) findViewById(R.id.etEditProfileGuardName);
+        etRegNOKPhone = (EditText) findViewById(R.id.etEditProfileGuardPhone);
+        pbUploadingData = (ProgressBar) findViewById(R.id.pbUploadingProfileData);
     }
 
 

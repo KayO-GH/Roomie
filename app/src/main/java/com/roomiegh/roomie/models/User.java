@@ -8,14 +8,14 @@ import java.util.Arrays;
  */
 public class User implements Serializable {
     //personal info
-    private String fName,lName, gender, phone, email, programme, nok, nokPhone;
-    private byte[] photo;
+    private String fName,lName, gender, phone, email, programme, nok, nokPhone, picPath;
+    int year;
 
 
     public User() {
     }
 
-    public User(String fName, String lName, String gender, String phone, String email, String programme, String nok, String nokPhone, byte[] photo) {
+    public User(String fName, String lName, String gender, String phone, String email, String programme, String nok, String nokPhone, String picPath, int year) {
         this.fName = fName;
         this.lName = lName;
         this.gender = gender;
@@ -24,7 +24,8 @@ public class User implements Serializable {
         this.programme = programme;
         this.nok = nok;
         this.nokPhone = nokPhone;
-        this.photo = photo;
+        this.picPath = picPath;
+        this.year = year;
     }
 
     public String getfName() {
@@ -91,12 +92,20 @@ public class User implements Serializable {
         this.nokPhone = nokPhone;
     }
 
-    public byte[] getPhoto() {
-        return photo;
+    public String getPicPath() {
+        return picPath;
     }
 
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     @Override
@@ -106,6 +115,7 @@ public class User implements Serializable {
 
         User user = (User) o;
 
+        if (year != user.year) return false;
         if (fName != null ? !fName.equals(user.fName) : user.fName != null) return false;
         if (lName != null ? !lName.equals(user.lName) : user.lName != null) return false;
         if (gender != null ? !gender.equals(user.gender) : user.gender != null) return false;
@@ -116,7 +126,7 @@ public class User implements Serializable {
         if (nok != null ? !nok.equals(user.nok) : user.nok != null) return false;
         if (nokPhone != null ? !nokPhone.equals(user.nokPhone) : user.nokPhone != null)
             return false;
-        return Arrays.equals(photo, user.photo);
+        return picPath != null ? picPath.equals(user.picPath) : user.picPath == null;
 
     }
 
@@ -130,7 +140,8 @@ public class User implements Serializable {
         result = 31 * result + (programme != null ? programme.hashCode() : 0);
         result = 31 * result + (nok != null ? nok.hashCode() : 0);
         result = 31 * result + (nokPhone != null ? nokPhone.hashCode() : 0);
-        result = 31 * result + Arrays.hashCode(photo);
+        result = 31 * result + (picPath != null ? picPath.hashCode() : 0);
+        result = 31 * result + year;
         return result;
     }
 
@@ -145,7 +156,8 @@ public class User implements Serializable {
                 ", programme='" + programme + '\'' +
                 ", nok='" + nok + '\'' +
                 ", nokPhone='" + nokPhone + '\'' +
-                ", photo=" + Arrays.toString(photo) +
+                ", picPath='" + picPath + '\'' +
+                ", year=" + year +
                 '}';
     }
 }

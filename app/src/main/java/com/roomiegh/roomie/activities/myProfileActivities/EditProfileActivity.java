@@ -45,9 +45,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //setting profile text for the tenant
         if (displayedCurrentUser != null) {
-            if (displayedCurrentUser.getPhoto() != null) {
+            /*if (displayedCurrentUser.getPhoto() != null) {
                 ivEditProfilePic.setImageBitmap(CameraUtil.convertByteArrayToPhoto(displayedCurrentUser.getPhoto()));
-            }
+            }*/
             tvProfileName.setText(displayedCurrentUser.getfName() + " " + displayedCurrentUser.getlName());
             //tvProfileRefNo.setText(displayedCurrentUser.getRefNo() + "");
             etEditProfileEmail.setText(displayedCurrentUser.getEmail());
@@ -67,7 +67,7 @@ public class EditProfileActivity extends AppCompatActivity {
         btEditProfileSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentUser.setPhoto(imageData);
+                //currentUser.setPhoto(imageData);
                 currentUser.setfName(displayedCurrentUser.getfName());
                 currentUser.setlName(displayedCurrentUser.getlName());
                 //currentUser.setRefNo(displayedCurrentUser.getRefNo());

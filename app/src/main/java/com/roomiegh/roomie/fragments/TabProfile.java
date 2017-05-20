@@ -1,6 +1,7 @@
 package com.roomiegh.roomie.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,11 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.activities.RegistrationActivity;
 import com.roomiegh.roomie.activities.SignInActivity;
 import com.roomiegh.roomie.models.User;
 import com.roomiegh.roomie.util.CameraUtil;
 import com.roomiegh.roomie.util.PreferenceData;
 import com.roomiegh.roomie.util.PushUserUtil;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Kwadwo Agyapon-Ntra on 06/10/2015.
@@ -73,6 +76,9 @@ public class TabProfile extends Fragment {
             llNoAccountView.setVisibility(View.GONE);
             nsvProfile.setVisibility(View.VISIBLE);
             fabEditProfile.setVisibility(View.VISIBLE);
+            
+            currentUser = PreferenceData.getLoggedInUser(getActivity());
+            refreshProfile(currentUser);
         }
 
 
@@ -103,19 +109,29 @@ public class TabProfile extends Fragment {
         return view;
     }
 
-    private void refreshProfile() {
-        currentUserEmail = this.getArguments().getString(new PushUserUtil().USER_EMAIL);
-
-        currentUser.setEmail(currentUserEmail);
+    private void refreshProfile(User currentUser) {
 
         //setting profile text for the tenant
-        if (displayedCurrentUser != null) {
-            if (displayedCurrentUser.getPhoto() != null) {
+        if (currentUser != null) {
+            /*if (displayedCurrentUser.getPhoto() != null) {
                 ivProfilePic.setImageBitmap(CameraUtil.convertByteArrayToPhoto(displayedCurrentUser.getPhoto()));
-            }
-            tvProfileName.setText(displayedCurrentUser.getfName() + " " + displayedCurrentUser.getlName());
-            tvProfileEmail.setText(displayedCurrentUser.getEmail());
-            tvProfilePhone.setText(displayedCurrentUser.getPhone());
+            }*/
+            tvProfileName.setText(currentUser.getfName() + " " + currentUser.getlName());
+            tvProfileEmail.setText(currentUser.getEmail());
+            tvProfilePhone.setText(currentUser.getPhone());
+            tvProfileProgramme.setText(currentUser.getProgramme());
+            tvProfileGuardName.setText(currentUser.getNok());
+            tvProfileGuardPhone.setText(currentUser.getPhone());
+            Picasso.with(getActivity())
+                    .load(currentUser.getPicPath())
+                    .centerCrop()
+                    .fit()
+                    .placeholder(R.drawable.ic_account_circle_gray)
+                    .error(R.drawable.ic_account_circle_gray)
+                    .into(ivProfilePic);
+            //ivRegImage.setPadding(0, 0, 0, 0);
+            //TODO add other fields for profile
+            
 
         } else
             Toast.makeText(getActivity().getApplicationContext(), "Profile not found", Toast.LENGTH_SHORT).show();
@@ -134,7 +150,7 @@ public class TabProfile extends Fragment {
         llNoAccountView = (LinearLayout) view.findViewById(R.id.llNoAccountView);
         ivSignInUser = (ImageView) view.findViewById(R.id.ivSignInUser);
         nsvProfile = (NestedScrollView) view.findViewById(R.id.nsvProfile);
-
+        ivProfilePic = (ImageView) view.findViewById(R.id.ivProfilePic);
         fabEditProfile = (FloatingActionButton) view.findViewById(R.id.fabEditProfile);
     }
 }

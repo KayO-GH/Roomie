@@ -72,14 +72,6 @@ public class HostelListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        //ivHostelThumbnail = (ImageView) convertView.findViewById(R.id.ivHostelThumbnail);
-        //tvHostelListName = (TextView) convertView.findViewById(R.id.tvHostelListName);
-        //tvHostelListRating = (TextView) convertView.findViewById(R.id.tvHostelListRating);
-        //tvHostelListLocation = (TextView) convertView.findViewById(R.id.tvHostelListLocation);
-
-        /*tvHostelListName.setText(hostel.getName());
-        tvHostelListRating.setText(String.valueOf(hostel.getRating()));*/
-
         viewHolder.tvHostelName.setText(hostel.getName());
         viewHolder.tvHostelRating.setText(String.valueOf(hostel.getRating()));
         if (hostel.getPhotopath() != null) {
