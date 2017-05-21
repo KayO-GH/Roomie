@@ -14,11 +14,12 @@ public class Hostel implements Serializable{
     double rating;
     String description;
     ArrayList<String> allFacilities;
+    Account account;
 
     public Hostel() {
     }
 
-    public Hostel(int id, int noOfRooms, int locationId, String name, String photopath, String location, double rating, String description, ArrayList<String> allFacilities) {
+    public Hostel(int id, int noOfRooms, int locationId, String name, String photopath, String location, double rating, String description, ArrayList<String> allFacilities, Account account) {
         this.id = id;
         this.noOfRooms = noOfRooms;
         this.locationId = locationId;
@@ -28,6 +29,7 @@ public class Hostel implements Serializable{
         this.rating = rating;
         this.description = description;
         this.allFacilities = allFacilities;
+        this.account = account;
     }
 
     public int getId() {
@@ -70,6 +72,14 @@ public class Hostel implements Serializable{
         this.photopath = photopath;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public double getRating() {
         return rating;
     }
@@ -94,12 +104,12 @@ public class Hostel implements Serializable{
         this.allFacilities = allFacilities;
     }
 
-    public String getLocation() {
-        return location;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     @Override
@@ -120,7 +130,9 @@ public class Hostel implements Serializable{
             return false;
         if (description != null ? !description.equals(hostel.description) : hostel.description != null)
             return false;
-        return allFacilities != null ? allFacilities.equals(hostel.allFacilities) : hostel.allFacilities == null;
+        if (allFacilities != null ? !allFacilities.equals(hostel.allFacilities) : hostel.allFacilities != null)
+            return false;
+        return account != null ? account.equals(hostel.account) : hostel.account == null;
 
     }
 
@@ -138,6 +150,7 @@ public class Hostel implements Serializable{
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (allFacilities != null ? allFacilities.hashCode() : 0);
+        result = 31 * result + (account != null ? account.hashCode() : 0);
         return result;
     }
 
@@ -153,6 +166,7 @@ public class Hostel implements Serializable{
                 ", rating=" + rating +
                 ", description='" + description + '\'' +
                 ", allFacilities=" + allFacilities +
+                ", account=" + account +
                 '}';
     }
 }

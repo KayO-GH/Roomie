@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.activities.BookingSuccessActivity;
 import com.roomiegh.roomie.activities.RegistrationActivity;
 import com.roomiegh.roomie.activities.SignInActivity;
 import com.roomiegh.roomie.models.User;
@@ -39,7 +40,7 @@ public class TabProfile extends Fragment {
     private String currentUserEmail;
     LinearLayout llNoAccountView;
     NestedScrollView nsvProfile;
-    FloatingActionButton fabEditProfile;
+    FloatingActionButton fabEditProfile,fabViewYourHostel;
 
 
     @Override
@@ -76,6 +77,11 @@ public class TabProfile extends Fragment {
             llNoAccountView.setVisibility(View.GONE);
             nsvProfile.setVisibility(View.VISIBLE);
             fabEditProfile.setVisibility(View.VISIBLE);
+
+            if(PreferenceData.getTenantExists(getActivity())){
+                //tenant exists, show button to view room
+                fabViewYourHostel.setVisibility(View.VISIBLE);
+            }
             
             currentUser = PreferenceData.getLoggedInUser(getActivity());
             refreshProfile(currentUser);
@@ -103,6 +109,20 @@ public class TabProfile extends Fragment {
                 Intent signInIntent = new Intent(getActivity().getApplicationContext(),
                         SignInActivity.class);
                 startActivityForResult(signInIntent, 100);//using 100 as requestCode
+            }
+        });
+
+        fabViewYourHostel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), BookingSuccessActivity.class));
+            }
+        });
+
+        fabEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //go to editprofile activity, populate fields from shared preference before allowing user to edit some
             }
         });
 
@@ -155,5 +175,6 @@ public class TabProfile extends Fragment {
         nsvProfile = (NestedScrollView) view.findViewById(R.id.nsvProfile);
         ivProfilePic = (ImageView) view.findViewById(R.id.ivProfilePic);
         fabEditProfile = (FloatingActionButton) view.findViewById(R.id.fabEditProfile);
+        fabViewYourHostel = (FloatingActionButton) view.findViewById(R.id.fabViewYourHostel);
     }
 }

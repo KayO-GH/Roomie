@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -42,6 +43,8 @@ public class ViewRoomActivity extends AppCompatActivity {
     FloatingActionButton fabBookRoom;
     Toolbar toolbar;
     ProgressDialog pdBookRoom;
+    String hostelLocation = "";
+    Bundle receivedBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +54,12 @@ public class ViewRoomActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
-        Bundle receivedBundle = getIntent().getBundleExtra("room_bundle");
+        receivedBundle = getIntent().getBundleExtra("room_bundle");
         thisRoom = (Room) receivedBundle.getSerializable("this_room");
         String hostelName = receivedBundle.getString("hostel_name");
+
+        if (receivedBundle.getString("hostel_location") != null)
+            hostelLocation = receivedBundle.getString("hostel_location");
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -67,6 +73,8 @@ public class ViewRoomActivity extends AppCompatActivity {
             tvRoomDetailsType.setText(tvRoomDetailsType.getText().toString() + " " + thisRoom.getType() + " in a room");
             tvRoomDetailsPrice.setText(tvRoomDetailsPrice.getText().toString() + " " + thisRoom.getPrice());
             tvRoomHostel.setText(tvRoomHostel.getText().toString() + " " + hostelName);
+            if (hostelLocation != null)
+                tvRoomLocation.setText(tvRoomLocation.getText().toString() + " " + hostelLocation);
         }
 
         callForPics(thisRoom.getId());
@@ -78,11 +86,11 @@ public class ViewRoomActivity extends AppCompatActivity {
                     //user is signed in
                     final User thisUser = PreferenceData.getLoggedInUser(ViewRoomActivity.this);
 
-                    if(PreferenceData.getTenantExists(ViewRoomActivity.this)){
+                    if (PreferenceData.getTenantExists(ViewRoomActivity.this)) {
                         //user is already a tenant, warn that room will be changed
                         AlertDialog.Builder builder = new AlertDialog.Builder(ViewRoomActivity.this);
-
-                        builder.setMessage("You will lose your old room");
+                        builder.setTitle("Attention!!");
+                        builder.setMessage("You will lose your old room!!!");
                         builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 registerUser(thisUser, thisRoom);
@@ -95,7 +103,7 @@ public class ViewRoomActivity extends AppCompatActivity {
                         });
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                    }else{
+                    } else {
                         //user does not already have a room... book this one
                         registerUser(thisUser, thisRoom);
                     }
@@ -110,7 +118,7 @@ public class ViewRoomActivity extends AppCompatActivity {
                             //Take user to sign in screen
                             Intent signInIntent = new Intent(ViewRoomActivity.this,
                                     SignInActivity.class);
-                            signInIntent.putExtra("booking_room",true);
+                            signInIntent.putExtra("booking_room", true);
                             startActivityForResult(signInIntent, 100);//using 100 as requestCode
                         }
                     });
@@ -160,16 +168,26 @@ public class ViewRoomActivity extends AppCompatActivity {
                                         response.getJSONObject("Tenant_info").getInt("rooms_room_id"));
 
                                 //TODO Move to new activity and show account details
-                                Intent paymentDeatilsIntent = new Intent(ViewRoomActivity.this,BookingSuccessActivity.class);
+                                Intent paymentDetailsIntent = new Intent(ViewRoomActivity.this, BookingSuccessActivity.class);
                                 //TODO attach required data
-                                startActivity(paymentDeatilsIntent);
+                                receivedBundle.putInt("hostel_id",thisRoom.getHostel_id());
+                                receivedBundle.putSerializable("this_room",thisRoom);
+                                paymentDetailsIntent.putExtra("room_bundle", receivedBundle);
+                                startActivity(paymentDetailsIntent);
 
                             } else if (response.has("updated")) {
                                 Toast.makeText(ViewRoomActivity.this, "Updated your room booking", Toast.LENGTH_SHORT).show();
+                                //TODO Move to new activity and show account details
+                                Intent paymentDetailsIntent = new Intent(ViewRoomActivity.this, BookingSuccessActivity.class);
+                                //TODO attach required data
+                                receivedBundle.putInt("hostel_id",thisRoom.getHostel_id());
+                                receivedBundle.putSerializable("this_room",thisRoom);
+                                paymentDetailsIntent.putExtra("room_bundle", receivedBundle);
+                                startActivity(paymentDetailsIntent);
                             } else {
                                 Toast.makeText(ViewRoomActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
                             }
-                        }catch (JSONException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         //TODO make this a dialog for confirmation
@@ -210,6 +228,24 @@ public class ViewRoomActivity extends AppCompatActivity {
         lvRoomPics = (ListView) findViewById(R.id.lvRoomImages);
         //TODO set adapter for lvRoomPics
         pdBookRoom = new ProgressDialog(ViewRoomActivity.this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -109,6 +109,15 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvHostelLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:textColor="#999"
+                        android:textSize="20sp"
+                        android:text="Location: "/>
+
+                    <TextView
                         android:id="@+id/tvHostelDetailsDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

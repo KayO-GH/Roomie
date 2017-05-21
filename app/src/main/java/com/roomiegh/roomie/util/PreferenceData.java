@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.roomiegh.roomie.activities.BookingSuccessActivity;
 import com.roomiegh.roomie.activities.RegistrationActivity;
 import com.roomiegh.roomie.activities.ViewRoomActivity;
+import com.roomiegh.roomie.models.Room;
 import com.roomiegh.roomie.models.User;
 
 /**
@@ -14,8 +16,10 @@ import com.roomiegh.roomie.models.User;
 
 public class PreferenceData
 {
+    //log in
     static final String PREF_LOGGEDIN_USER_EMAIL = "logged_in_email";
     static final String PREF_USER_LOGGEDIN_STATUS = "logged_in_status";
+    //profile
     static final String PREF_PROFILE_PIC_PATH = "profile_pic";
     static final String PREF_PROFILE_F_NAME = "first_name";
     static final String PREF_PROFILE_L_NAME = "last_name";
@@ -26,9 +30,15 @@ public class PreferenceData
     static final String PREF_PROFILE_NOK_PHONE = "nok_phone";
     static final String PREF_PROFILE_YEAR = "year";
     static final String PREF_PROFILE_ID = "user_id";
+    //tenant
     static final String PREF_TENANT_ID = "tenant_id";
     static final String PREF_TENANT_ROOM_ID = "tenant_room_id";
-    static final String PREF_TENANT_HOSTEL_ID = "tenant_ihostel_d";
+    static final String PREF_TENANT_HOSTEL_ID = "tenant_hostel_id";
+    //room
+    static final String PREF_ROOM_PRICE = "room_price";
+    static final String PREF_ROOM_NUM = "room_num";
+    static final String PREF_ROOM_TYPE = "room_type";
+
 
 
     public static SharedPreferences getSharedPreferences(Context ctx)
@@ -148,5 +158,25 @@ public class PreferenceData
         editor.remove(PREF_TENANT_ROOM_ID);
         editor.remove(PREF_TENANT_HOSTEL_ID);
         editor.apply();
+    }
+
+    public static void setRoom(Context ctx, Room thisRoom) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putInt(PREF_TENANT_ROOM_ID, thisRoom.getId());
+        editor.putInt(PREF_TENANT_HOSTEL_ID, thisRoom.getHostel_id());
+        editor.putInt(PREF_ROOM_PRICE, thisRoom.getPrice());
+        editor.putInt(PREF_ROOM_TYPE, thisRoom.getType());
+        editor.putString(PREF_ROOM_NUM, thisRoom.getRoomNum());
+        editor.apply();
+    }
+
+    public static Room getRoom(Context ctx) {
+        Room room = new Room();
+        room.setId(getSharedPreferences(ctx).getInt(PREF_TENANT_ROOM_ID, 0));
+        room.setHostel_id(getSharedPreferences(ctx).getInt(PREF_TENANT_HOSTEL_ID, 0));
+        room.setPrice(getSharedPreferences(ctx).getInt(PREF_ROOM_PRICE,0));
+        room.setRoomNum(getSharedPreferences(ctx).getString(PREF_ROOM_NUM,""));
+        room.setType(getSharedPreferences(ctx).getInt(PREF_ROOM_TYPE,0));
+        return room;
     }
 }

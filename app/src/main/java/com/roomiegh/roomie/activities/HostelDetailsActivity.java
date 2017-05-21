@@ -37,13 +37,14 @@ public class HostelDetailsActivity extends AppCompatActivity {
     int hostelID = -1;
     NestedScrollView nSView;
     ImageView ivHostelDetailsImage;
-    TextView tvHostelDescription, tvHostelName, tvFacilities;
+    TextView tvHostelDescription, tvHostelName, tvFacilities, tvLocation;
     RatingBar rbHostelDetailsRating;
     ProgressBar pbHostelDetails;
     FloatingActionButton fabViewRooms;
 
     Toolbar toolbar;
     String url = "http://roomiegh.herokuapp.com/hostel/";
+    String location = "";
 
     ArrayList<String> hostelFacilities;
     Bundle receivedInfoBundle;
@@ -91,7 +92,7 @@ public class HostelDetailsActivity extends AppCompatActivity {
                         Log.d(LOG_TAG, response.toString());
 
                         if (response.length() != 0) {
-                            JSONObject jsonData;
+                            JSONObject jsonData, hostelLocationObject;
                             JSONArray hostelPicsArray, hostelDescriptionArray, hostelFacilitiesArray;
                             Hostel hostel = null;
                             hostelFacilities = new ArrayList<>();
@@ -114,6 +115,15 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                 hostelFacilitiesArray = jsonData.getJSONArray("hostel_facilities");
 
                                 //TODO Deal with getting correct location, then pass that location to the bundle and receive it at room details
+                                if (jsonData.has("hostel_location")){
+                                    hostelLocationObject = jsonData.getJSONObject("hostel_location");
+                                    if(hostelLocationObject.has("name")){
+                                        location = hostelLocationObject.getString("name");
+                                        receivedInfoBundle.putString("hostel_location",location);
+                                    }else{
+                                        Log.d(LOG_TAG, "onResponse: no name for location");
+                                    }
+                                }
 
                                 //TODO use for loop to pick multiple pics for the hostel
                                 if (hostelPicsArray.length() > 0)
@@ -146,7 +156,8 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                     rbHostelDetailsRating.setNumStars((int) hostel.getRating());
                                     tvHostelDescription.setText(hostel.getDescription());
                                     tvHostelName.setText(hostel.getName());
-                                    receivedInfoBundle.putString("hsotel_name",hostel.getName());
+                                    receivedInfoBundle.putString("hostel_name",hostel.getName());
+                                    tvLocation.setText(tvLocation.getText().toString()+location);
                                     //list facilitites
                                     String facilityList = "";
                                     for (String facility : hostelFacilities)
@@ -196,6 +207,7 @@ public class HostelDetailsActivity extends AppCompatActivity {
         tvFacilities = (TextView) findViewById(R.id.tvFacilities);
         nSView = (NestedScrollView) findViewById(R.id.nsView);
         fabViewRooms = (FloatingActionButton) findViewById(R.id.fabViewRooms);
+        tvLocation = (TextView) findViewById(R.id.tvHostelLocation);
     }
 
     @Override
