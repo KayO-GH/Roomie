@@ -25,6 +25,7 @@ import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.models.Room;
 import com.roomiegh.roomie.models.User;
 import com.roomiegh.roomie.util.PreferenceData;
+import com.roomiegh.roomie.util.PushUserUtil;
 import com.roomiegh.roomie.volley.AppSingleton;
 
 import org.json.JSONException;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 public class ViewRoomActivity extends AppCompatActivity {
     private static final String REQUEST_TAG = "RegisterRoomRequest";
-    String booking_url = "http://roomiegh.herokuapp.com/tenant";//append room id
+    String booking_url = "http://roomiegh.herokuapp.com/tenant";
     Room thisRoom;
     TextView tvRoomDetailsType, tvRoomDetailsPrice, tvRoomHostel, tvRoomLocation;
     ListView lvRoomPics;
@@ -184,7 +185,33 @@ public class ViewRoomActivity extends AppCompatActivity {
                                 receivedBundle.putSerializable("this_room",thisRoom);
                                 paymentDetailsIntent.putExtra("room_bundle", receivedBundle);
                                 startActivity(paymentDetailsIntent);
-                            } else {
+                            } else if (response.has("alert")){
+                                //TODO Incomplete registration, take user to registration screen
+                                //tell user to log in to continue
+                                AlertDialog.Builder builder = new AlertDialog.Builder(ViewRoomActivity.this);
+
+                                builder.setTitle("Incomplete Registration");
+                                builder.setMessage("Complete your registration to proceed?");
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //Take user to sign in screen
+                                        Intent registerIntent = new Intent(ViewRoomActivity.this,
+                                                RegistrationActivity.class);
+                                        Bundle emailBundle = new Bundle();
+                                        emailBundle.putString(PushUserUtil.USER_EMAIL,PreferenceData.getLoggedInEmailUser(ViewRoomActivity.this));
+                                        emailBundle.putString("registering_now","Yes I am!");
+                                        registerIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY, emailBundle);
+                                        startActivityForResult(registerIntent, 100);//using 100 as requestCode
+                                    }
+                                });
+                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                    }
+                                });
+// 3. Get the AlertDialog from create()
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            }else {
                                 Toast.makeText(ViewRoomActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {

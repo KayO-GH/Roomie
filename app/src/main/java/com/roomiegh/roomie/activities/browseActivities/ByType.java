@@ -214,6 +214,9 @@ public class ByType extends AppCompatActivity {
                 ByType.this.setTitle("Browse By Type");
                 llRoomTypes.setVisibility(View.VISIBLE);
                 lvHostelsByType.setVisibility(View.GONE);
+                pbByType.setVisibility(View.GONE);
+            }else{
+                finish();
             }
             return true;
         }

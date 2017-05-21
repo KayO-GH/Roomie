@@ -79,8 +79,7 @@
                         android:textColor="#888"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-                    <!--TODO put in location, passed from previous activity
-                    after Clement fixes problem with locations-->
+
                     <TextView
                         android:id="@+id/tvRoomDetailsLocation"
                         android:layout_width="match_parent"

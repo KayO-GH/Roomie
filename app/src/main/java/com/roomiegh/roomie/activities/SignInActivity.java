@@ -1,9 +1,12 @@
 package com.roomiegh.roomie.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,6 +35,7 @@ import com.roomiegh.roomie.util.PreferenceData;
 import com.roomiegh.roomie.util.PushUserUtil;
 import com.roomiegh.roomie.volley.AppSingleton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -176,6 +180,7 @@ public class SignInActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         User signedInUser = new User();
                         JSONObject jsonData;
+                        JSONArray tenantData;
                         pdSignin.dismiss();
                         // response
                         Log.d("Response", response.toString());
@@ -194,32 +199,74 @@ public class SignInActivity extends AppCompatActivity {
                                 signedInUser.setPicPath(jsonData.getString("photoPath"));
                                 signedInUser.setNok(jsonData.getJSONArray("user_guardian").getJSONObject(0).getString("name"));
                                 signedInUser.setEmail(userEmail);
-                            }
-                            if (response.has("contact_info")) {
-                                jsonData = response.getJSONArray("contact_info").getJSONObject(0);
-                                signedInUser.setPhone(jsonData.getString("phone"));
-                            }
-                            if (response.has("guardian_contact_info")) {
-                                jsonData = response.getJSONArray("guardian_contact_info").getJSONObject(0);
-                                signedInUser.setNokPhone(jsonData.getString("phone"));
-                            }
-                            Toast.makeText(SignInActivity.this, "Saving Preference Data", Toast.LENGTH_SHORT).show();
-                            PreferenceData.setLoggedInUserEmail(getApplicationContext(), userEmail);
-                            PreferenceData.setUserLoggedInStatus(getApplicationContext(), true);
-                            PreferenceData.setProfileData(SignInActivity.this, signedInUser);
+
+                                if(jsonData.has("user_info")){
+                                    tenantData = jsonData.getJSONArray("user_info");
+                                    if (tenantData.length() > 0) {
+                                        //tenant data exists, set in preferences
+                                        PreferenceData.setTenantInfo(SignInActivity.this,
+                                                tenantData.getJSONObject(0).getInt("id"),
+                                                tenantData.getJSONObject(0).getInt("hostels_hostel_id"),
+                                                tenantData.getJSONObject(0).getInt("rooms_room_id"));
+                                    }
+                                }
+
+                                if (response.has("contact_info")) {
+                                    jsonData = response.getJSONArray("contact_info").getJSONObject(0);
+                                    signedInUser.setPhone(jsonData.getString("phone"));
+                                }
+                                if (response.has("guardian_contact_info")) {
+                                    jsonData = response.getJSONArray("guardian_contact_info").getJSONObject(0);
+                                    signedInUser.setNokPhone(jsonData.getString("phone"));
+                                }
+                                Toast.makeText(SignInActivity.this, "Saving Preference Data", Toast.LENGTH_SHORT).show();
+                                PreferenceData.setLoggedInUserEmail(getApplicationContext(), userEmail);
+                                PreferenceData.setUserLoggedInStatus(getApplicationContext(), true);
+                                PreferenceData.setProfileData(SignInActivity.this, signedInUser);
 
                                 /*PreferenceData.setTenantInfo(SignInActivity.this,
                                         response.getJSONObject("Tenant_info").getInt("id"),
                                         response.getJSONObject("Tenant_info").getInt("hostels_hostel_id"),
                                         response.getJSONObject("Tenant_info").getInt("rooms_room_id"));*/
-                            //go to main activity
+                                //go to main activity
 
-                            if (!isBookingRoom) {//take user to main, else finish and go back to room booking
-                                Intent goToApp = new Intent(SignInActivity.this, MainActivity.class);
-                                startActivity(goToApp);
+                                if (!isBookingRoom) {//take user to main, else finish and go back to room booking
+                                    Intent goToApp = new Intent(SignInActivity.this, MainActivity.class);
+                                    startActivity(goToApp);
+                                }
+
+                                SignInActivity.this.finish();
+
+
+                            }else if(response.has("alert")){
+                                //TODO Incomplete registration, take user to registration screen
+                                //tell user to log in to continue
+                                AlertDialog.Builder builder = new AlertDialog.Builder(SignInActivity.this);
+
+                                builder.setTitle("Incomplete Registration");
+                                builder.setMessage("Complete your registration to proceed?");
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //Take user to sign in screen
+                                        Intent registerIntent = new Intent(SignInActivity.this,
+                                                RegistrationActivity.class);
+                                        Bundle emailBundle = new Bundle();
+                                        emailBundle.putString(PushUserUtil.USER_EMAIL,etSignInEmail.getText().toString());
+                                        //emailBundle.putString("registering_now","Yes I am!");
+                                        registerIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY, emailBundle);
+                                        startActivityForResult(registerIntent, 100);//using 100 as requestCode
+                                    }
+                                });
+                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                    }
+                                });
+// 3. Get the AlertDialog from create()
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
                             }
 
-                            SignInActivity.this.finish();
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();

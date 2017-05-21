@@ -6,7 +6,7 @@
     android:background="#f8f8f8">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabEditProfile"
+        android:id="@+id/fabViewYourHostel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -16,22 +16,22 @@
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:src="@drawable/ic_edit"
+        android:src="@drawable/ic_visibility_white"
         android:textColor="#ffffff"
-        android:visibility="visible"
+        android:visibility="gone"
         app:backgroundTint="@color/colorAccent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabViewYourHostel"
+        android:id="@+id/fabEditProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/fabEditProfile"
+        android:layout_toLeftOf="@+id/fabViewYourHostel"
         android:layout_gravity="center"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:src="@drawable/ic_visibility_white"
+        android:src="@drawable/ic_edit"
         android:textColor="#ffffff"
         android:visibility="gone"
         app:backgroundTint="@color/colorAccent" />

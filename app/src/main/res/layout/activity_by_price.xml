@@ -103,7 +103,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:src="@android:drawable/ic_menu_search"
-        app:backgroundTint="@color/colorAccent"/>
+        app:backgroundTint="@color/colorAccent"
+        android:layout_margin="5dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

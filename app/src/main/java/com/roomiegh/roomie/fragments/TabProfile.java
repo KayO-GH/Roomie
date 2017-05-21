@@ -50,18 +50,11 @@ public class TabProfile extends Fragment {
             //boolean receivedStatus = data.getBooleanExtra("bool", false);
             llNoAccountView.setVisibility(View.GONE);
             nsvProfile.setVisibility(View.VISIBLE);
-            fabEditProfile.setVisibility(View.VISIBLE);
-
-            /*if (receivedStatus) {
-
-                //refresh profile
-                refreshProfile();
-            }*/
-            // if (receivedStatus) {
-
-
-            //getFragmentManager().beginTransaction().detach(this).attach(new MyProfileFragment());
-            // }
+            //fabEditProfile.setVisibility(View.VISIBLE);
+            if(PreferenceData.getTenantExists(getActivity())){
+                //tenant exists, show button to view room
+                fabViewYourHostel.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -76,33 +69,18 @@ public class TabProfile extends Fragment {
             //show profile
             llNoAccountView.setVisibility(View.GONE);
             nsvProfile.setVisibility(View.VISIBLE);
-            fabEditProfile.setVisibility(View.VISIBLE);
+            //fabEditProfile.setVisibility(View.VISIBLE);
 
             if(PreferenceData.getTenantExists(getActivity())){
                 //tenant exists, show button to view room
                 fabViewYourHostel.setVisibility(View.VISIBLE);
             }
-            
+
             currentUser = PreferenceData.getLoggedInUser(getActivity());
             refreshProfile(currentUser);
         }
 
 
-        //receiving current user email from registration screen
-        //receiving arguments from passed bundle and contained information
-        //refreshProfile();
-
-        /*btMyProfileEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle pushUser = new Bundle();
-                pushUser.putString(PushUserUtil.USER_EMAIL, currentUserEmail);
-                Intent editIntent = new Intent(getActivity().getApplicationContext(),
-                        EditProfileActivity.class);
-                editIntent.putExtra(PushUserUtil.PUSH_INTENT_KEY, pushUser);
-                startActivityForResult(editIntent, 100);//using 100 as requestCode
-            }
-        });*/
         ivSignInUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +100,8 @@ public class TabProfile extends Fragment {
         fabEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //go to editprofile activity, populate fields from shared preference before allowing user to edit some
+                //go to edit profile activity, populate fields from shared preference before allowing user to edit some
+                //we need updae routes for this
             }
         });
 

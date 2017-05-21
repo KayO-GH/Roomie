@@ -83,6 +83,7 @@ public class RegistrationActivity extends AppCompatActivity {
     Uri downloadUrl = null;
     Uri profilePicUri = null;
     private String url = "http://roomiegh.herokuapp.com/roomieuser";
+    private boolean currentlyBooking = false;
 
 
     @Override
@@ -100,6 +101,12 @@ public class RegistrationActivity extends AppCompatActivity {
 
         Bundle receivedInfo = getIntent().getBundleExtra(PushUserUtil.PUSH_INTENT_KEY);
         email = receivedInfo.getString(PushUserUtil.USER_EMAIL);
+        if(receivedInfo.getString("registering_now")==null){
+            //not called from View room called
+            currentlyBooking = false;
+        }else{
+            currentlyBooking = true;
+        }
 
         if (!email.equals("")) {
             etRegEmail.setText(email);
@@ -138,6 +145,7 @@ public class RegistrationActivity extends AppCompatActivity {
         btRegCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 finish();
             }
         });
@@ -166,6 +174,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         user.setEmail(email);
                         if(downloadUrl != null)
                             user.setPicPath(downloadUrl.getPath());
+                        else
+                            user.setPicPath("");
                         user.setNok(etRegNOK.getText().toString());
                         user.setNokPhone(etRegNOKPhone.getText().toString());
 
@@ -271,16 +281,22 @@ public class RegistrationActivity extends AppCompatActivity {
                         try {
                             user.setId(response.getInt("user_info"));
                         } catch (JSONException e) {
+                            Log.d(LOG_TAG, "onResponse: "+e.toString());
                             e.printStackTrace();
                         }
                         Log.d("Response", response.toString());
-                        Toast.makeText(RegistrationActivity.this, "Profie Saved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegistrationActivity.this, "Profile Saved", Toast.LENGTH_SHORT).show();
                         PreferenceData.setProfileData(RegistrationActivity.this,user);
+                        PreferenceData.setLoggedInUserEmail(getApplicationContext(), user.getEmail());
+                        PreferenceData.setUserLoggedInStatus(getApplicationContext(), true);
+
                         if(profilePicUri != null)
                             PreferenceData.setProfilePicPath(RegistrationActivity.this,profilePicUri.getPath());
 
+
                         setResult(RESULT_OK);
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        if(!currentlyBooking)
+                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
                         finish();
                     }
                 },
@@ -291,7 +307,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         // error
                         pbUploadingData.setVisibility(View.GONE);
                         Log.d("Error.Response", error.toString());
-                        Log.d("Error.Response", error.getMessage());
+                        //Log.d("Error.Response", error.getMessage());
                         error.printStackTrace();
                         Toast.makeText(RegistrationActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     }

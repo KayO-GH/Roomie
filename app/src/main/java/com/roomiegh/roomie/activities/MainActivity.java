@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             PreferenceData.clearLoggedInUserData(MainActivity.this);
             PreferenceData.clearProfileData(MainActivity.this);
             PreferenceData.clearProfilePic(MainActivity.this);
+            PreferenceData.clearTenantInfo(MainActivity.this);
             this.finishAffinity();
             Intent goHome = new Intent(this, SignInActivity.class);
             startActivity(goHome);

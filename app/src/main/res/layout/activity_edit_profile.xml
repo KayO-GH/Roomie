@@ -155,7 +155,8 @@
                             android:layout_height="wrap_content"
                             android:padding="3dp"
                             android:textSize="20sp"
-                            android:drawSelectorOnTop="true"/>
+                            android:drawSelectorOnTop="true"
+                            android:layout_gravity="center_horizontal"/>
                     </LinearLayout>
 
 
