@@ -56,8 +56,8 @@
                 android:id="@+id/etSignInEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
                 android:ems="10"
                 android:hint="E-mail"
                 android:inputType="textEmailAddress" />
@@ -66,8 +66,8 @@
                 android:id="@+id/etSignInPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
                 android:ems="10"
                 android:hint="Password"
                 android:inputType="textPassword" />
@@ -76,19 +76,19 @@
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
                 android:ems="10"
                 android:hint="Confirm Password"
                 android:inputType="textPassword"
-                android:visibility="gone" />
+                android:visibility="gone"
+                />
 
             <Button
                 android:id="@+id/btSignIn"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
                 android:text="Sign In" />
 
             <TextView

@@ -9,5 +9,10 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/mnSignIn"
-        android:title="@string/action_sign_out"/>
+        android:title="@string/action_sign_out"
+        android:orderInCategory="200"/>
+    <item
+        android:id="@+id/mnSignOut"
+        android:title="@string/signout"
+        android:orderInCategory="300"/>
 </menu>

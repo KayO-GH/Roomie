@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +18,12 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.adapters.ViewPagerAdapter;
 import com.roomiegh.roomie.fragments.SlidingTabLayout;
+import com.roomiegh.roomie.util.PreferenceData;
 import com.roomiegh.roomie.util.ReadRSS;
 
 //import tabs.SlidingTabLayout;
@@ -34,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     CharSequence Titles[] = {"Home", "Browse", "Profile"};
     int NumbOftabs = 3;
     String currentUserEmail;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private static final String TAG = "authentication_tag";
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,22 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
 
         // Creating ViewPagerAdapter and Passing Fragment Manager, Titles for the Tabs and Number Of Tabs.
         //adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,NumbOftabs,currentUserEmail);
@@ -78,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.removeItem(R.id.action_settings);
+        //if (user != null)//signed in
+        if(PreferenceData.getUserLoggedInStatus(MainActivity.this))//signed in
+            menu.removeItem(R.id.mnSignIn);
+        else
+            menu.removeItem(R.id.mnSignOut);
         return true;
     }
 
@@ -90,11 +120,22 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.mnSignIn) {
+        if (id == R.id.mnSignIn) {
+            mAuth.signOut();
+            PreferenceData.clearLoggedInUserData(MainActivity.this);
+            PreferenceData.clearProfileData(MainActivity.this);
+            PreferenceData.clearProfilePic(MainActivity.this);
             this.finishAffinity();
-            Intent goHome = new Intent(this, LandingActivity.class);
+            Intent goHome = new Intent(this, SignInActivity.class);
+            startActivity(goHome);
+            return true;
+        }else if (id == R.id.mnSignOut) {
+            mAuth.signOut();
+            PreferenceData.clearLoggedInUserData(MainActivity.this);
+            PreferenceData.clearProfileData(MainActivity.this);
+            PreferenceData.clearProfilePic(MainActivity.this);
+            this.finishAffinity();
+            Intent goHome = new Intent(this, SignInActivity.class);
             startActivity(goHome);
             return true;
         }

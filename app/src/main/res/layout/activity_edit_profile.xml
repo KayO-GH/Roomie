@@ -115,7 +115,8 @@
                         android:inputType="phone"
                         android:layout_marginBottom="7dp"
                         android:layout_marginTop="7dp"
-                        android:textSize="20sp"/>
+                        android:textSize="20sp"
+                        android:maxLength="10"/>
 
                     <EditText
                         android:id="@+id/etEditProfileEmail"
@@ -152,7 +153,7 @@
                             android:id="@+id/spProfileYear"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
+                            android:padding="3dp"
                             android:textSize="20sp"
                             android:drawSelectorOnTop="true"/>
                     </LinearLayout>
@@ -176,7 +177,8 @@
                         android:inputType="phone"
                         android:layout_marginBottom="7dp"
                         android:layout_marginTop="7dp"
-                        android:textSize="20sp"/>
+                        android:textSize="20sp"
+                        android:maxLength="10"/>
                 </LinearLayout>
 
 
@@ -192,7 +194,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="Cancel"
-                        android:textColor="#ffffff"
                         android:layout_weight="1"/>
                     <Button
                         android:id="@+id/btEditProfileSave"
@@ -200,7 +201,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="Save"
-                        android:textColor="#ffffff"
                         android:layout_weight="1"/>
                 </LinearLayout>
 

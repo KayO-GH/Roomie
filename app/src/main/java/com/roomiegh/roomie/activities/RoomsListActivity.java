@@ -47,6 +47,8 @@ public class RoomsListActivity extends AppCompatActivity {
     int roomType = -1;
     int maxPrice = -1;
     int minPrice = -1;
+    private String hostelName = null;
+    Bundle receivedInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,21 +63,22 @@ public class RoomsListActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        final Bundle receivedInfo = getIntent().getBundleExtra("type_bundle");
+        receivedInfo = getIntent().getBundleExtra("type_bundle");
         browseType = receivedInfo.getString("browse_type");
         hostelID = receivedInfo.getInt("hostel_id");
-        if(browseType.equals("type"))
+        if (browseType.equals("type"))
             roomType = receivedInfo.getInt("room_type");
-        if(browseType.equals("price")){
+        if (browseType.equals("price")) {
             maxPrice = receivedInfo.getInt("max_price");
             minPrice = receivedInfo.getInt("min_price");
         }
 
-
         //TODO set title to HostelName
-        if(receivedInfo.getString("hostel_name") != null)
+        if (receivedInfo.getString("hostel_name") != null) {
+            hostelName = receivedInfo.getString("hostel_name");
             if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(receivedInfo.getString("hostel_name")+" Rooms");
+                getSupportActionBar().setTitle(hostelName + " Rooms");
+        }
 
         init();
 
@@ -84,10 +87,9 @@ public class RoomsListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO View the room and register if you want
                 Intent viewRoomIntent = new Intent(RoomsListActivity.this, ViewRoomActivity.class);
-                Bundle roomBundle = new Bundle();
-                roomBundle.putSerializable("this_room",((Room) roomListAdapter.getItem(position)));
+                receivedInfo.putSerializable("this_room", ((Room) roomListAdapter.getItem(position)));
 
-                viewRoomIntent.putExtra("room_bundle",roomBundle);
+                viewRoomIntent.putExtra("room_bundle", receivedInfo);
                 startActivity(viewRoomIntent);
             }
         });
@@ -105,7 +107,7 @@ public class RoomsListActivity extends AppCompatActivity {
 
     private void callForRooms(int hostelID, final String browseType) {
         pbHostelRooms.setVisibility(View.VISIBLE);
-        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, url+hostelID, null,
+        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, url + hostelID, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -129,17 +131,18 @@ public class RoomsListActivity extends AppCompatActivity {
                                         room.setRoomNum(roomObj.getString("roomNo"));
                                         room.setType(roomObj.getInt("type"));
                                         room.setPrice(roomObj.getInt("price"));
+                                        room.setHostel_id(roomObj.getInt("hostels_hostel_id"));
 
                                         //add hostel to list
-                                        if(browseType.equals("type")){
+                                        if (browseType.equals("type")) {
                                             //check if room matches original room type
-                                            if(room.getType() == roomType)
+                                            if (room.getType() == roomType)
                                                 allRooms.add(room);
-                                        }else if(browseType.equals("price")){
+                                        } else if (browseType.equals("price")) {
                                             //check if price matches original price range
-                                            if(room.getPrice()<maxPrice && room.getPrice()>minPrice)
+                                            if (room.getPrice() < maxPrice && room.getPrice() > minPrice)
                                                 allRooms.add(room);
-                                        }else{
+                                        } else {
                                             //add all rooms
                                             allRooms.add(room);
                                         }

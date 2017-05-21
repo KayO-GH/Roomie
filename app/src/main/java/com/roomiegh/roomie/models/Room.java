@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class Room implements Serializable{
-    int id,type,price;
+    int id,type,price, hostel_id;
     //TODO let API return array of photoPaths for a single room
     //TODO possibly add the floor the room is on
     String hostelName,photoPath, roomNum;
@@ -15,21 +15,22 @@ public class Room implements Serializable{
     public Room() {
     }
 
-    public Room(int id, String roomNum, int type, int price, String hostelName, String photoPath) {
+    public Room(int id, int type, int price, int hostel_id, String hostelName, String photoPath, String roomNum) {
         this.id = id;
-        this.roomNum = roomNum;
         this.type = type;
         this.price = price;
+        this.hostel_id = hostel_id;
         this.hostelName = hostelName;
         this.photoPath = photoPath;
-    }
-
-    public String getRoomNum() {
-        return roomNum;
-    }
-
-    public void setRoomNum(String roomNum) {
         this.roomNum = roomNum;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getType() {
@@ -48,6 +49,14 @@ public class Room implements Serializable{
         this.price = price;
     }
 
+    public int getHostel_id() {
+        return hostel_id;
+    }
+
+    public void setHostel_id(int hostel_id) {
+        this.hostel_id = hostel_id;
+    }
+
     public String getHostelName() {
         return hostelName;
     }
@@ -64,12 +73,12 @@ public class Room implements Serializable{
         this.photoPath = photoPath;
     }
 
-    public int getId() {
-        return id;
+    public String getRoomNum() {
+        return roomNum;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRoomNum(String roomNum) {
+        this.roomNum = roomNum;
     }
 
     @Override
@@ -82,6 +91,7 @@ public class Room implements Serializable{
         if (id != room.id) return false;
         if (type != room.type) return false;
         if (price != room.price) return false;
+        if (hostel_id != room.hostel_id) return false;
         if (hostelName != null ? !hostelName.equals(room.hostelName) : room.hostelName != null)
             return false;
         if (photoPath != null ? !photoPath.equals(room.photoPath) : room.photoPath != null)
@@ -95,6 +105,7 @@ public class Room implements Serializable{
         int result = id;
         result = 31 * result + type;
         result = 31 * result + price;
+        result = 31 * result + hostel_id;
         result = 31 * result + (hostelName != null ? hostelName.hashCode() : 0);
         result = 31 * result + (photoPath != null ? photoPath.hashCode() : 0);
         result = 31 * result + (roomNum != null ? roomNum.hashCode() : 0);
@@ -107,6 +118,7 @@ public class Room implements Serializable{
                 "id=" + id +
                 ", type=" + type +
                 ", price=" + price +
+                ", hostel_id=" + hostel_id +
                 ", hostelName='" + hostelName + '\'' +
                 ", photoPath='" + photoPath + '\'' +
                 ", roomNum='" + roomNum + '\'' +

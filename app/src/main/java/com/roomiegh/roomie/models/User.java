@@ -9,13 +9,13 @@ import java.util.Arrays;
 public class User implements Serializable {
     //personal info
     private String fName,lName, gender, phone, email, programme, nok, nokPhone, picPath;
-    int year;
+    int id,year;
 
 
     public User() {
     }
 
-    public User(String fName, String lName, String gender, String phone, String email, String programme, String nok, String nokPhone, String picPath, int year) {
+    public User(String fName, String lName, String gender, String phone, String email, String programme, String nok, String nokPhone, String picPath, int id, int year) {
         this.fName = fName;
         this.lName = lName;
         this.gender = gender;
@@ -25,6 +25,7 @@ public class User implements Serializable {
         this.nok = nok;
         this.nokPhone = nokPhone;
         this.picPath = picPath;
+        this.id = id;
         this.year = year;
     }
 
@@ -108,6 +109,14 @@ public class User implements Serializable {
         this.year = year;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,6 +124,7 @@ public class User implements Serializable {
 
         User user = (User) o;
 
+        if (id != user.id) return false;
         if (year != user.year) return false;
         if (fName != null ? !fName.equals(user.fName) : user.fName != null) return false;
         if (lName != null ? !lName.equals(user.lName) : user.lName != null) return false;
@@ -141,6 +151,7 @@ public class User implements Serializable {
         result = 31 * result + (nok != null ? nok.hashCode() : 0);
         result = 31 * result + (nokPhone != null ? nokPhone.hashCode() : 0);
         result = 31 * result + (picPath != null ? picPath.hashCode() : 0);
+        result = 31 * result + id;
         result = 31 * result + year;
         return result;
     }
@@ -157,6 +168,7 @@ public class User implements Serializable {
                 ", nok='" + nok + '\'' +
                 ", nokPhone='" + nokPhone + '\'' +
                 ", picPath='" + picPath + '\'' +
+                ", id=" + id +
                 ", year=" + year +
                 '}';
     }

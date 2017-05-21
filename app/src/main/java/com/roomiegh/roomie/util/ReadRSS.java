@@ -90,7 +90,9 @@ public class ReadRSS extends AsyncTask<Void, Void, Void> {
             recyclerView.addItemDecoration(new VerticalSpace(30));
             recyclerView.setAdapter(adapter);
         }else{
+            recyclerView.setVisibility(View.GONE);
             svConnectionError.setVisibility(View.VISIBLE);
+            svConnectionError.bringToFront();
             Toast.makeText(context, R.string.inactive_connection, Toast.LENGTH_SHORT).show();
         }
     }

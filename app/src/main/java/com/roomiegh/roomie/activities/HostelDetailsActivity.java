@@ -102,6 +102,8 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                 hostel = new Hostel();//make sure to redefine hostel inside loop to avoid filling the arraylist with the same elements
                                 hostel.setId(jsonData.getInt("id"));
                                 hostel.setName(jsonData.getString("name"));
+                                //send hostel name to next activity over here
+                                receivedInfoBundle.putString("hostel_name",jsonData.getString("name"));
                                 hostel.setLocationId(jsonData.getInt("locations_location_id"));
                                 hostel.setNoOfRooms(jsonData.getInt("noOfRooms"));
                                 hostel.setRating(jsonData.getDouble("rating"));
@@ -110,6 +112,8 @@ public class HostelDetailsActivity extends AppCompatActivity {
                                 hostelPicsArray = jsonData.getJSONArray("hostel_pics");
                                 hostelDescriptionArray = jsonData.getJSONArray("hostel_description");
                                 hostelFacilitiesArray = jsonData.getJSONArray("hostel_facilities");
+
+                                //TODO Deal with getting correct location, then pass that location to the bundle and receive it at room details
 
                                 //TODO use for loop to pick multiple pics for the hostel
                                 if (hostelPicsArray.length() > 0)

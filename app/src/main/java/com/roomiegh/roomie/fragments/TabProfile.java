@@ -122,13 +122,16 @@ public class TabProfile extends Fragment {
             tvProfileProgramme.setText(currentUser.getProgramme());
             tvProfileGuardName.setText(currentUser.getNok());
             tvProfileGuardPhone.setText(currentUser.getPhone());
-            Picasso.with(getActivity())
-                    .load(currentUser.getPicPath())
-                    .centerCrop()
-                    .fit()
-                    .placeholder(R.drawable.ic_account_circle_gray)
-                    .error(R.drawable.ic_account_circle_gray)
-                    .into(ivProfilePic);
+            if(!(currentUser.getPicPath().equals("") || currentUser.getPicPath() == null)){
+                Picasso.with(getActivity())
+                        .load(currentUser.getPicPath())
+                        .centerCrop()
+                        .fit()
+                        .placeholder(R.drawable.ic_account_circle_gray)
+                        .error(R.drawable.ic_account_circle_gray)
+                        .into(ivProfilePic);
+            }
+
             //ivRegImage.setPadding(0, 0, 0, 0);
             //TODO add other fields for profile
             

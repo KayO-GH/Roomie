@@ -83,7 +83,7 @@ public class HostelListAdapter extends BaseAdapter {
                         .into(viewHolder.ivHostelThumb);
                 Log.d(TAG, "Photopath: "+hostel.getPhotopath());
             }else{
-
+                viewHolder.ivHostelThumb.setImageResource(R.drawable.ic_home_black);
             }
 
         }

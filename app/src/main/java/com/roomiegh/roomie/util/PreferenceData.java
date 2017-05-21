@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.roomiegh.roomie.activities.RegistrationActivity;
+import com.roomiegh.roomie.activities.ViewRoomActivity;
 import com.roomiegh.roomie.models.User;
 
 /**
@@ -24,6 +25,10 @@ public class PreferenceData
     static final String PREF_PROFILE_NOK = "nok";
     static final String PREF_PROFILE_NOK_PHONE = "nok_phone";
     static final String PREF_PROFILE_YEAR = "year";
+    static final String PREF_PROFILE_ID = "user_id";
+    static final String PREF_TENANT_ID = "tenant_id";
+    static final String PREF_TENANT_ROOM_ID = "tenant_room_id";
+    static final String PREF_TENANT_HOSTEL_ID = "tenant_ihostel_d";
 
 
     public static SharedPreferences getSharedPreferences(Context ctx)
@@ -67,6 +72,7 @@ public class PreferenceData
         editor.remove(PREF_PROFILE_NOK);
         editor.remove(PREF_PROFILE_NOK_PHONE);
         editor.remove(PREF_PROFILE_YEAR);
+        editor.remove(PREF_PROFILE_ID);
         editor.apply();
     }
 
@@ -104,6 +110,7 @@ public class PreferenceData
         editor.putString(PREF_PROFILE_NOK, user.getNok());
         editor.putString(PREF_PROFILE_NOK_PHONE, user.getNokPhone());
         editor.putInt(PREF_PROFILE_YEAR,user.getYear());
+        editor.putInt(PREF_PROFILE_ID,user.getId());
         editor.apply();
     }
 
@@ -119,6 +126,27 @@ public class PreferenceData
         currentUser.setGender(getSharedPreferences(ctx).getString(PREF_PROFILE_GENDER, ""));
         currentUser.setProgramme(getSharedPreferences(ctx).getString(PREF_PROFILE_PROGRAMME, ""));
         currentUser.setPhone(getSharedPreferences(ctx).getString(PREF_PROFILE_PHONE, ""));
+        currentUser.setId(getSharedPreferences(ctx).getInt(PREF_PROFILE_ID, 0));
         return currentUser;
+    }
+
+    public static void setTenantInfo(Context ctx, int tenantID, int hostelID, int roomID) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putInt(PREF_TENANT_ID, tenantID);
+        editor.putInt(PREF_TENANT_ROOM_ID, roomID);
+        editor.putInt(PREF_TENANT_HOSTEL_ID, hostelID);
+        editor.apply();
+    }
+
+    public static boolean getTenantExists(Context ctx) {
+        return getSharedPreferences(ctx).getInt(PREF_TENANT_ID,0) != 0;
+    }
+
+    public static void clearTenantInfo(Context ctx) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.remove(PREF_TENANT_ID);
+        editor.remove(PREF_TENANT_ROOM_ID);
+        editor.remove(PREF_TENANT_HOSTEL_ID);
+        editor.apply();
     }
 }

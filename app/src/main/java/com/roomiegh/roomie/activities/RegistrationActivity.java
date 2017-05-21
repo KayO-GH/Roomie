@@ -204,14 +204,12 @@ public class RegistrationActivity extends AppCompatActivity {
 
 // 2. Chain together various setter methods to set the dialog characteristics
                 builder.setMessage("Change Picture");
-                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User clicked Camera button
-                        //TODO take picture and upload
-                        takePicture();
+                        //Do nothing
                     }
                 });
-                builder.setNegativeButton("Upload", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Upload", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //TODO upload picture from storage
                         Intent gallery =
@@ -270,14 +268,20 @@ public class RegistrationActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         pbUploadingData.setVisibility(View.GONE);
                         // response
+                        try {
+                            user.setId(response.getInt("user_info"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         Log.d("Response", response.toString());
                         Toast.makeText(RegistrationActivity.this, "Profie Saved", Toast.LENGTH_SHORT).show();
                         PreferenceData.setProfileData(RegistrationActivity.this,user);
                         if(profilePicUri != null)
                             PreferenceData.setProfilePicPath(RegistrationActivity.this,profilePicUri.getPath());
 
+                        setResult(RESULT_OK);
                         startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                        finishAffinity();
+                        finish();
                     }
                 },
                 new Response.ErrorListener()
@@ -287,6 +291,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         // error
                         pbUploadingData.setVisibility(View.GONE);
                         Log.d("Error.Response", error.toString());
+                        Log.d("Error.Response", error.getMessage());
                         error.printStackTrace();
                         Toast.makeText(RegistrationActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -370,7 +375,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
-                        //TODO upload the download url as photopath for this user
+                        //TODO upload the download booking_url as photopath for this user
                         downloadUrl = taskSnapshot.getDownloadUrl();
                         Picasso.with(RegistrationActivity.this).load(fileUri).fit().centerCrop().into(ivRegImage);
                         ivRegImage.setPadding(0, 0, 0, 0);
