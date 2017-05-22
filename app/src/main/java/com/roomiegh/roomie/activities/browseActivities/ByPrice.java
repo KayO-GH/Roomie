@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -55,6 +56,7 @@ public class ByPrice extends AppCompatActivity {
     ArrayList<Hostel> allHostels;
     HostelListAdapter hostelListAdapter;
     int max = -1,min = -1;
+    private TextView tvNothingToShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,13 +211,14 @@ public class ByPrice extends AppCompatActivity {
     private void queryHostelsByPrice(int maxPrice, int minPrice) {
         allHostels.clear();
         pbHostelsByPrice.setVisibility(View.VISIBLE);
+        tvNothingToShow.setVisibility(View.GONE);
         JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, price_specific_url + minPrice + "/" + maxPrice, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(LOG_TAG, response.toString());
 
-                        if (response.length() != 0) {
+                        if (response.length() > 0) {
                             JSONObject jsonData;
                             Hostel hostel;
                             JSONObject jsonHostel;
@@ -251,18 +254,25 @@ public class ByPrice extends AppCompatActivity {
                                 hostelListAdapter.setAllHostels(allHostels);
                                 hostelListAdapter.notifyDataSetChanged();
                                 pbHostelsByPrice.setVisibility(View.GONE);
+                                tvNothingToShow.setVisibility(View.GONE);
                             }
                         }else{
                             // TODO: 09/05/2017 Show that no response matches the request
                             pbHostelsByPrice.setVisibility(View.GONE);
+                            tvNothingToShow.setVisibility(View.VISIBLE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.getMessage());
+                Log.d(LOG_TAG, "onErrorResponse: "+error.toString());
+                if(error.toString().contains("NoConnectionError")){
+                    Toast.makeText(ByPrice.this, "Your internet connection might be down", Toast.LENGTH_SHORT).show();
+                    tvNothingToShow.setVisibility(View.VISIBLE);
+                }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
-                pbHostelsByPrice.setVisibility(View.GONE);
+                error.printStackTrace();
             }
         });
         // Adding JsonObject request to request queue
@@ -282,6 +292,7 @@ public class ByPrice extends AppCompatActivity {
         allHostels = new ArrayList<Hostel>();
         hostelListAdapter = new HostelListAdapter(getApplicationContext(), allHostels);
         lvHostelsByPrice.setAdapter(hostelListAdapter);
+        tvNothingToShow = (TextView) findViewById(R.id.tvNothingToShow);
     }
 
     @Override

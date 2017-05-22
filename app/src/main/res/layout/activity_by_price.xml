@@ -119,6 +119,15 @@
             android:id="@+id/lvHostelsByPrice"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+        <TextView
+            android:id="@+id/tvNothingToShow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nothing_to_show"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:textSize="20sp"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 

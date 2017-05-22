@@ -76,5 +76,14 @@
         android:layout_height="30dp"
         android:layout_centerInParent="true"
         android:visibility="gone"/>
+    <TextView
+        android:id="@+id/tvNothingToShow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nothing_to_show"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:textSize="20sp"
+        android:visibility="gone"/>
 
 </RelativeLayout>

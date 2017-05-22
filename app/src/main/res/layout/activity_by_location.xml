@@ -25,6 +25,16 @@
             android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/tvLocationsUnavailable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/locations_unavailable"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:textAlignment="center"/>
     </FrameLayout>
 
     <RelativeLayout
@@ -40,6 +50,15 @@
             android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tvNothingToShow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nothing_to_show"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:textSize="20sp"
             android:visibility="gone"/>
     </RelativeLayout>
 

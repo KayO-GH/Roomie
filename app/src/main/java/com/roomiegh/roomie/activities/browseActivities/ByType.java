@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -46,6 +48,7 @@ public class ByType extends AppCompatActivity {
     HostelListAdapter hostelListAdapter;
     private ProgressBar pbByType;
     int roomType = -1;
+    private TextView tvNothingToShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,13 +125,14 @@ public class ByType extends AppCompatActivity {
 
         allHostels.clear();
         pbByType.setVisibility(View.VISIBLE);
+        tvNothingToShow.setVisibility(View.GONE);
         JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, queryURL, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(LOG_TAG, "response: " + response.toString());
 
-                        if (response.length() != 0) {
+                        if (response.length() > 0) {
                             JSONObject jsonData;
                             Hostel hostel;
                             JSONObject jsonHostel;
@@ -165,16 +169,23 @@ public class ByType extends AppCompatActivity {
                                 hostelListAdapter.setAllHostels(allHostels);
                                 hostelListAdapter.notifyDataSetChanged();
                                 pbByType.setVisibility(View.GONE);
+                                tvNothingToShow.setVisibility(View.GONE);
                             }
                         } else {
                             // TODO: 09/05/2017 Show that no response matches the request
                             pbByType.setVisibility(View.GONE);
+                            tvNothingToShow.setVisibility(View.VISIBLE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.toString());
+                Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.getMessage());
+                Log.d(LOG_TAG, "onErrorResponse: "+error.toString());
+                if(error.toString().contains("NoConnectionError")){
+                    Toast.makeText(ByType.this, "Your internet connection might be down", Toast.LENGTH_SHORT).show();
+                    tvNothingToShow.setVisibility(View.VISIBLE);
+                }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 error.printStackTrace();
                 pbByType.setVisibility(View.GONE);
@@ -195,6 +206,7 @@ public class ByType extends AppCompatActivity {
         hostelListAdapter = new HostelListAdapter(getApplicationContext(), allHostels);
         lvHostelsByType.setAdapter(hostelListAdapter);
         pbByType = (ProgressBar) findViewById(R.id.pbByType);
+        tvNothingToShow = (TextView) findViewById(R.id.tvNothingToShow);
     }
 
     @Override

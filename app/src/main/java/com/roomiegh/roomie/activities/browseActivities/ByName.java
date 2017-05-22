@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -49,6 +50,7 @@ public class ByName extends AppCompatActivity {
     ArrayList<Hostel> allHostels;
     ListView lvHostelsByName;
     HostelListAdapter hostelListAdapter;
+    TextView tvNothingToShow;
 
     public ProgressBar getPbByName() {
         return pbByName;
@@ -96,13 +98,14 @@ public class ByName extends AppCompatActivity {
 
     private void callForDetails() {
         pbByName.setVisibility(View.VISIBLE);
+        tvNothingToShow.setVisibility(View.GONE);
         JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(LOG_TAG, response.toString());
 
-                        if (response.length() != 0) {
+                        if (response.length() > 0) {
                             JSONObject jsonData;
                             JSONArray hostelPicsArray;
                             Hostel hostel;
@@ -135,16 +138,24 @@ public class ByName extends AppCompatActivity {
                                 hostelListAdapter.setAllHostels(allHostels);
                                 hostelListAdapter.notifyDataSetChanged();
                                 pbByName.setVisibility(View.GONE);
+                                tvNothingToShow.setVisibility(View.GONE);
                             }
                         } else {
                             // TODO: 09/05/2017 Show that no response matches the request
+                            tvNothingToShow.setVisibility(View.VISIBLE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.getMessage());
+                Log.d(LOG_TAG, "onErrorResponse: "+error.toString());
+                if(error.toString().contains("NoConnectionError")){
+                    Toast.makeText(ByName.this, "Your internet connection might be down", Toast.LENGTH_SHORT).show();
+                    tvNothingToShow.setVisibility(View.VISIBLE);
+                }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
+                error.printStackTrace();
                 pbByName.setVisibility(View.GONE);
             }
         });
@@ -158,6 +169,7 @@ public class ByName extends AppCompatActivity {
         allHostels = new ArrayList<Hostel>();
         hostelListAdapter = new HostelListAdapter(getApplicationContext(), allHostels);
         lvHostelsByName.setAdapter(hostelListAdapter);
+        tvNothingToShow = (TextView) findViewById(R.id.tvNothingToShow);
     }
 
 

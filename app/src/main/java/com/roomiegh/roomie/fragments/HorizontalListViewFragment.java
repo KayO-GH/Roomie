@@ -26,6 +26,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.activities.browseActivities.ByLocation;
+import com.roomiegh.roomie.activities.browseActivities.ByName;
 import com.roomiegh.roomie.models.Location;
 import com.roomiegh.roomie.volley.AppSingleton;
 
@@ -50,12 +51,14 @@ public class HorizontalListViewFragment extends Fragment {
     LocationAdapter mLocationAdapter = new LocationAdapter();
     ProgressBar pbLocations;
     private int lastSelected = 0;
+    private TextView tvLocationsUnavailable;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //listItems.clear();
         pbLocations = ((ByLocation) getActivity()).getPbLocations();
+        tvLocationsUnavailable = ((ByLocation) getActivity()).getTvLocationsUnavailable();
         //do API call here and populate list view
         callForLocations();
 
@@ -63,13 +66,14 @@ public class HorizontalListViewFragment extends Fragment {
 
     private void callForLocations() {
         pbLocations.setVisibility(View.VISIBLE);
+        tvLocationsUnavailable.setVisibility(View.GONE);
         JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, locations_url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(LOG_TAG, response.toString());
 
-                        if (response.length() != 0) {
+                        if (response.length() > 0) {
                             JSONObject jsonData;
                             Location location;
                             try {
@@ -94,14 +98,23 @@ public class HorizontalListViewFragment extends Fragment {
                                 mLocationAdapter.setList(allLocations);
                                 mLocationAdapter.notifyDataSetChanged();
                                 pbLocations.setVisibility(View.GONE);
+                                tvLocationsUnavailable.setVisibility(View.GONE);
                             }
+                        }else{
+                            // TODO: 09/05/2017 Show that no response matches the request
+                            tvLocationsUnavailable.setVisibility(View.VISIBLE);
+                            pbLocations.setVisibility(View.GONE);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.toString());
+                if(error.toString().contains("NoConnectionError")){
+                    Toast.makeText(getActivity(), "Your internet connection might be down", Toast.LENGTH_SHORT).show();
+                    tvLocationsUnavailable.setVisibility(View.VISIBLE);
+                }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
+                error.printStackTrace();
                 pbLocations.setVisibility(View.GONE);
             }
         });
