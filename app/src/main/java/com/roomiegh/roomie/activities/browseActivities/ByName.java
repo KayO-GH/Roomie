@@ -142,6 +142,7 @@ public class ByName extends AppCompatActivity {
                             }
                         } else {
                             // TODO: 09/05/2017 Show that no response matches the request
+                            pbByName.setVisibility(View.GONE);
                             tvNothingToShow.setVisibility(View.VISIBLE);
                         }
                     }
@@ -152,6 +153,7 @@ public class ByName extends AppCompatActivity {
                 Log.d(LOG_TAG, "onErrorResponse: "+error.toString());
                 if(error.toString().contains("NoConnectionError")){
                     Toast.makeText(ByName.this, "Your internet connection might be down", Toast.LENGTH_LONG).show();
+                    pbByName.setVisibility(View.GONE);
                     tvNothingToShow.setVisibility(View.VISIBLE);
                 }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());

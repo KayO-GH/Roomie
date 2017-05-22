@@ -201,6 +201,7 @@ public class ByLocation extends AppCompatActivity {
                                 }
                             } else {
                                 // TODO: 09/05/2017 Show that no response matches the request
+                                pbLocationHostels.setVisibility(View.GONE);
                                 tvNothingToShow.setVisibility(View.VISIBLE);
                             }
                         } catch (JSONException e) {
@@ -214,6 +215,7 @@ public class ByLocation extends AppCompatActivity {
                 Log.d(LOG_TAG, "onErrorResponse: "+error.toString());
                 if(error.toString().contains("NoConnectionError")){
                     Toast.makeText(ByLocation.this, "Your internet connection might be down", Toast.LENGTH_LONG).show();
+                    pbLocationHostels.setVisibility(View.GONE);
                     tvNothingToShow.setVisibility(View.VISIBLE);
                 }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());

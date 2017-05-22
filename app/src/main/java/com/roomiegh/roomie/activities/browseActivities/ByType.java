@@ -184,6 +184,7 @@ public class ByType extends AppCompatActivity {
                 Log.d(LOG_TAG, "onErrorResponse: "+error.toString());
                 if(error.toString().contains("NoConnectionError")){
                     Toast.makeText(ByType.this, "Your internet connection might be down", Toast.LENGTH_LONG).show();
+                    pbByType.setVisibility(View.GONE);
                     tvNothingToShow.setVisibility(View.VISIBLE);
                 }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
