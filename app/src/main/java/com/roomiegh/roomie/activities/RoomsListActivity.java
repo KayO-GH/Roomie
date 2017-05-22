@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -17,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.roomiegh.roomie.R;
+import com.roomiegh.roomie.activities.browseActivities.ByLocation;
 import com.roomiegh.roomie.adapters.HostelListAdapter;
 import com.roomiegh.roomie.adapters.RoomListAdapter;
 import com.roomiegh.roomie.models.Hostel;
@@ -49,6 +52,8 @@ public class RoomsListActivity extends AppCompatActivity {
     int minPrice = -1;
     private String hostelName = null;
     Bundle receivedInfo;
+    TextView tvNothingToShow;
+    private boolean noRooms = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,17 +108,21 @@ public class RoomsListActivity extends AppCompatActivity {
         allRooms = new ArrayList<>();
         roomListAdapter = new RoomListAdapter(getApplicationContext(), allRooms);
         lvRoomsByHostel.setAdapter(roomListAdapter);
+        tvNothingToShow = (TextView) findViewById(R.id.tvNothingToShow);
+        tvNothingToShow.setText(R.string.rooms_unavailable);
     }
 
     private void callForRooms(int hostelID, final String browseType) {
         pbHostelRooms.setVisibility(View.VISIBLE);
+        tvNothingToShow.setVisibility(View.GONE);
+        lvRoomsByHostel.setVisibility(View.GONE);
         JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, url + hostelID, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(LOG_TAG, response.toString());
 
-                        if (response.length() != 0) {
+                        if (response.length() > 0) {
                             JSONObject jsonData;
                             JSONArray hostelRoomsArray;
                             JSONObject roomObj;
@@ -124,31 +133,41 @@ public class RoomsListActivity extends AppCompatActivity {
 
                                     //TODO parse JSON right to get images
                                     hostelRoomsArray = jsonData.getJSONArray("hostel_rooms");
-                                    for (int j = 0; j < hostelRoomsArray.length(); j++) {
-                                        roomObj = hostelRoomsArray.getJSONObject(j);
-                                        room = new Room();//make sure to redefine room inside loop to avoid filling the arraylist with the same elements
-                                        room.setId(roomObj.getInt("id"));
-                                        room.setRoomNum(roomObj.getString("roomNo"));
-                                        room.setType(roomObj.getInt("type"));
-                                        room.setPrice(roomObj.getInt("price"));
-                                        room.setHostel_id(roomObj.getInt("hostels_hostel_id"));
+                                    if(hostelRoomsArray.length()>0){
+                                        for (int j = 0; j < hostelRoomsArray.length(); j++) {
+                                            roomObj = hostelRoomsArray.getJSONObject(j);
+                                            room = new Room();//make sure to redefine room inside loop to avoid filling the arraylist with the same elements
+                                            room.setId(roomObj.getInt("id"));
+                                            room.setRoomNum(roomObj.getString("roomNo"));
+                                            room.setType(roomObj.getInt("type"));
+                                            room.setPrice(roomObj.getInt("price"));
+                                            room.setHostel_id(roomObj.getInt("hostels_hostel_id"));
 
-                                        //add hostel to list
-                                        if (browseType.equals("type")) {
-                                            //check if room matches original room type
-                                            if (room.getType() == roomType)
+                                            //add hostel to list
+                                            if (browseType.equals("type")) {
+                                                //check if room matches original room type
+                                                if (room.getType() == roomType)
+                                                    allRooms.add(room);
+                                            } else if (browseType.equals("price")) {
+                                                //check if price matches original price range
+                                                if (room.getPrice() < maxPrice && room.getPrice() > minPrice)
+                                                    allRooms.add(room);
+                                            } else {
+                                                //add all rooms
                                                 allRooms.add(room);
-                                        } else if (browseType.equals("price")) {
-                                            //check if price matches original price range
-                                            if (room.getPrice() < maxPrice && room.getPrice() > minPrice)
-                                                allRooms.add(room);
-                                        } else {
-                                            //add all rooms
-                                            allRooms.add(room);
+                                            }
+
+                                            Log.d(LOG_TAG, "Added: " + room.getRoomNum());
                                         }
-
-                                        Log.d(LOG_TAG, "Added: " + room.getRoomNum());
+                                    }else{
+                                        Log.d(LOG_TAG, "onResponse: no rooms here");
+                                        // TODO: 09/05/2017 Show that no response matches the request
+                                        pbHostelRooms.setVisibility(View.GONE);
+                                        tvNothingToShow.setVisibility(View.VISIBLE);
+                                        noRooms = true;
+                                        lvRoomsByHostel.setVisibility(View.GONE);
                                     }
+
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -158,15 +177,32 @@ public class RoomsListActivity extends AppCompatActivity {
                                 roomListAdapter.setAllRooms(allRooms);
                                 roomListAdapter.notifyDataSetChanged();
                                 pbHostelRooms.setVisibility(View.GONE);
+                                if(noRooms){
+                                    tvNothingToShow.setVisibility(View.VISIBLE);
+                                }else{
+                                    tvNothingToShow.setVisibility(View.GONE);
+                                }
+                                lvRoomsByHostel.setVisibility(View.VISIBLE);
+
                             }
                         } else {
                             // TODO: 09/05/2017 Show that no response matches the request
+                            pbHostelRooms.setVisibility(View.GONE);
+                            tvNothingToShow.setVisibility(View.VISIBLE);
+                            lvRoomsByHostel.setVisibility(View.GONE);
+
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.getMessage());
+                if(error.toString().contains("NoConnectionError")){
+                    Toast.makeText(RoomsListActivity.this, "Your internet connection might be down", Toast.LENGTH_LONG).show();
+                    pbHostelRooms.setVisibility(View.GONE);
+                    tvNothingToShow.setVisibility(View.VISIBLE);
+                    lvRoomsByHostel.setVisibility(View.GONE);
+                }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 pbHostelRooms.setVisibility(View.GONE);
             }

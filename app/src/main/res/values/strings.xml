@@ -138,4 +138,5 @@
     <string name="search">Search</string>
     <string name="nothing_to_show">No hostels match your search</string>
     <string name="locations_unavailable">Unable to show locations right now.</string>
+    <string name="rooms_unavailable">No rooms available for this hostel</string>
 </resources>

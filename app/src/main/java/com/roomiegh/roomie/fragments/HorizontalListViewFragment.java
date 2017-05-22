@@ -231,7 +231,7 @@ public class HorizontalListViewFragment extends Fragment {
 
                         ((ByLocation) getActivity()).callForLocationHostels(id);
 
-                        Toast.makeText(getActivity(), titleTextView.getText() + " selected", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), titleTextView.getText() + " selected", Toast.LENGTH_SHORT).show();
 
                     }else {
                         //probably do nothing here

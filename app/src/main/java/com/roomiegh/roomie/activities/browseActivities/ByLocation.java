@@ -145,6 +145,7 @@ public class ByLocation extends AppCompatActivity {
         allHostels.clear();
         pbLocationHostels.setVisibility(View.VISIBLE);
         tvNothingToShow.setVisibility(View.GONE);
+        lvLocationHostels.setVisibility(View.GONE);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, location_specific_url + locationID, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -198,11 +199,13 @@ public class ByLocation extends AppCompatActivity {
                                     hostelListAdapter.notifyDataSetChanged();
                                     pbLocationHostels.setVisibility(View.GONE);
                                     tvNothingToShow.setVisibility(View.GONE);
+                                    lvLocationHostels.setVisibility(View.VISIBLE);
                                 }
                             } else {
                                 // TODO: 09/05/2017 Show that no response matches the request
                                 pbLocationHostels.setVisibility(View.GONE);
                                 tvNothingToShow.setVisibility(View.VISIBLE);
+                                lvLocationHostels.setVisibility(View.GONE);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -217,6 +220,7 @@ public class ByLocation extends AppCompatActivity {
                     Toast.makeText(ByLocation.this, "Your internet connection might be down", Toast.LENGTH_LONG).show();
                     pbLocationHostels.setVisibility(View.GONE);
                     tvNothingToShow.setVisibility(View.VISIBLE);
+                    lvLocationHostels.setVisibility(View.GONE);
                 }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 error.printStackTrace();
