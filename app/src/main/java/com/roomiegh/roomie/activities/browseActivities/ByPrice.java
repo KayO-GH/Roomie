@@ -268,7 +268,7 @@ public class ByPrice extends AppCompatActivity {
                 Log.d(LOG_TAG, "onErrorResponse: Error listener fired: " + error.getMessage());
                 Log.d(LOG_TAG, "onErrorResponse: "+error.toString());
                 if(error.toString().contains("NoConnectionError")){
-                    Toast.makeText(ByPrice.this, "Your internet connection might be down", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ByPrice.this, "Your internet connection might be down", Toast.LENGTH_LONG).show();
                     tvNothingToShow.setVisibility(View.VISIBLE);
                 }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());

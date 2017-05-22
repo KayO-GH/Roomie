@@ -110,7 +110,7 @@ public class HorizontalListViewFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if(error.toString().contains("NoConnectionError")){
-                    Toast.makeText(getActivity(), "Your internet connection might be down", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Your internet connection might be down", Toast.LENGTH_LONG).show();
                     tvLocationsUnavailable.setVisibility(View.VISIBLE);
                 }
                 VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
