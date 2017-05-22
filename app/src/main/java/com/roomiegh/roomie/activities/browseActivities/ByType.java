@@ -149,9 +149,13 @@ public class ByType extends AppCompatActivity {
                                     hostel.setRating(jsonHostel.getDouble("rating"));
                                     //if (jsonHostel.getString("photoPath") != null)
                                     if (jsonHostel.has("hostel_pics_small")) {
-                                        hostel.setPhotopath(
-                                                jsonHostel.getJSONArray("hostel_pics_small")
-                                                        .getJSONObject(0).getString("image_url"));
+                                        if(jsonHostel.getJSONArray("hostel_pics_small").length()>0){
+                                            hostel.setPhotopath(
+                                                    jsonHostel.getJSONArray("hostel_pics_small")
+                                                            .getJSONObject(0).getString("image_url"));
+                                        }else{
+                                            hostel.setPhotopath("");
+                                        }
                                     }else{
                                         hostel.setPhotopath("");
                                     }
