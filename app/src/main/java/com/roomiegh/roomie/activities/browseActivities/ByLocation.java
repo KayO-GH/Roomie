@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.roomiegh.roomie.R;
 import com.roomiegh.roomie.activities.HostelDetailsActivity;
 import com.roomiegh.roomie.adapters.HostelListAdapter;
@@ -80,7 +81,7 @@ public class ByLocation extends AppCompatActivity {
                 Bundle pushBrowseTypeBundle = new Bundle();
                 pushBrowseTypeBundle.putString("browse_type", BROWSE_TYPE);
                 int hostelID = ((Hostel) hostelListAdapter.getItem(position)).getId();
-                pushBrowseTypeBundle.putInt("hostel_id",hostelID);
+                pushBrowseTypeBundle.putInt("hostel_id", hostelID);
                 Intent hostelDetailsIntent =
                         new Intent(getApplicationContext(), HostelDetailsActivity.class);
                 hostelDetailsIntent.putExtra("type_bundle", pushBrowseTypeBundle);
@@ -118,7 +119,7 @@ public class ByLocation extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }else if(id == android.R.id.home){
+        } else if (id == android.R.id.home) {
             finish();
             return true;
         }
@@ -133,22 +134,22 @@ public class ByLocation extends AppCompatActivity {
     public void callForLocationHostels(int locationID) {
         allHostels.clear();
         pbLocationHostels.setVisibility(View.VISIBLE);
-        JsonArrayRequest jsonArrayReq = new JsonArrayRequest(Request.Method.GET, location_specific_url + locationID, null,
-                new Response.Listener<JSONArray>() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, location_specific_url + locationID, null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         Log.d(LOG_TAG, response.toString());
 
-                        if (response.length() != 0) {
-                            JSONObject jsonData;
+                        if (response.has("location_hostels")) {
+                            //JSONArray jsonData;
                             Hostel hostel;
                             JSONArray hostelsArray;
                             JSONObject jsonHostel;
                             try {
                                 // TODO: 08/05/2017 Change JSON parsing for this call
 
-                                jsonData = response.getJSONObject(0);
-                                hostelsArray = jsonData.getJSONArray("location_hostels");
+                                //jsonData = response.getJSONArray("location_hostels");
+                                hostelsArray = response.getJSONArray("location_hostels");
 
                                 for (int j = 0; j < hostelsArray.length(); j++) {
                                     jsonHostel = hostelsArray.getJSONObject(j);
@@ -159,7 +160,17 @@ public class ByLocation extends AppCompatActivity {
                                     hostel.setNoOfRooms(jsonHostel.getInt("noOfRooms"));
                                     hostel.setRating(jsonHostel.getDouble("rating"));
                                     //if (jsonHostel.getString("photoPath") != null)
-                                    hostel.setPhotopath(jsonHostel.getString("photoPath"));
+                                    if (jsonHostel.has("hostel_pics_small")) {
+                                        if(jsonHostel.getJSONArray("hostel_pics_small").length()>0){
+                                            hostel.setPhotopath(
+                                                    jsonHostel.getJSONArray("hostel_pics_small")
+                                                            .getJSONObject(0).getString("image_url"));
+                                        }else{
+                                            hostel.setPhotopath("");
+                                        }
+                                    }else{
+                                        hostel.setPhotopath("");
+                                    }
 
                                     //add hostel to list
                                     allHostels.add(hostel);
@@ -175,7 +186,7 @@ public class ByLocation extends AppCompatActivity {
                                 hostelListAdapter.notifyDataSetChanged();
                                 pbLocationHostels.setVisibility(View.GONE);
                             }
-                        }else{
+                        } else {
                             // TODO: 09/05/2017 Show that no response matches the request
                         }
                     }
@@ -188,7 +199,7 @@ public class ByLocation extends AppCompatActivity {
             }
         });
         // Adding JsonObject request to request queue
-        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrayReq, REQUEST_TAG);
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq, REQUEST_TAG);
 
     }
 
