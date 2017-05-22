@@ -135,4 +135,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="signout">SignOut</string>
+    <string name="search">Search</string>
 </resources>

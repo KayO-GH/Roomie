@@ -143,8 +143,8 @@ public class ByType extends AppCompatActivity {
                                     hostel.setLocationId(jsonHostel.getInt("locations_location_id"));
                                     hostel.setNoOfRooms(jsonHostel.getInt("noOfRooms"));
                                     hostel.setRating(jsonHostel.getDouble("rating"));
-                                    /*if (jsonHostel.getString("photoPath") != null)
-                                        hostel.setPhotopath(jsonHostel.getString("photoPath"));*/
+                                    //if (jsonHostel.getString("photoPath") != null)
+                                    hostel.setPhotopath(jsonHostel.getString("photoPath"));
 
                                     //add hostel to list
                                     allHostels.add(hostel);
